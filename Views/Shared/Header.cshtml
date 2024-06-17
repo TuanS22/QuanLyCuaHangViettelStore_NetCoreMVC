@@ -1,0 +1,279 @@
+﻿@using TTTN_ViettelStore.Models
+@using Newtonsoft.Json
+
+<header>
+    <!-- Banner top -->
+    <div class="container">
+        <div class="banner">
+            <img src="~/Frontend/img/banner_1.jpg" alt="">
+            <img src="~/Frontend/img/banner_2.png" alt="">
+            <img src="~/Frontend/img/banner_3.jpg" alt="">
+        </div>
+    </div>
+</header>
+<nav class="nav_menu">
+    <!-- Menu main top-->
+    <div class="menu_top container">
+        <!-- Menu logo -->
+        <div class="menu_logo">
+            <a href="/Home">
+                <img src="~/Frontend/img/menu_logo.png" alt="" width="166px">
+            </a>
+        </div>
+        <!-- Menu search input -->
+        <div class="menu_search">
+            <input onkeyup="search()" class="input_search" type="text" name="search" id="key" placeholder="Bạn cần tìm sản phẩm nào ...">
+            <button class="button_icon_search" form="form-search-top" type="button" onclick="location.href='/Products/SearchName?key='+document.getElementById('key').value;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <div id="smart_search">
+                <ul>
+                </ul>
+            </div>
+        </div>
+        <style>
+            html {
+                scroll-behavior: smooth;
+            }
+
+            .button_icon_search {
+                border: 0;
+                float: right;
+                margin-top: -35px;
+                margin-right: 1px;
+                padding: 5px 18px;
+                border-radius: 0px 20px 20px 0;
+                background: #fff;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .menu_search {
+                position: relative;
+            }
+
+            #smart_search {
+                position: absolute;
+                width: 520px;
+                background: #fff;
+                z-index: 100;
+                top: 48px;
+                display: none;
+                height: 300px;
+                border-radius: 10px;
+                box-shadow: 1px 1px 10px 0px black;
+            }
+
+                #smart_search img {
+                    width: 60px;
+                    height: 56px;
+                    margin: 5px 15px 5px 35px;
+                    border-radius: 8px;
+                }
+
+                #smart_search ul {
+                    padding: 0px;
+                    margin: 0px;
+                    list-style: none;
+                    text-align: left;
+                }
+
+                    #smart_search ul li {
+                        border-bottom: 1px solid #dddddd;
+                        height: 66px;
+                    }
+
+            .hover:hover {
+                color: black;
+            }
+
+        </style>
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+            // phải kiểm tra xem jquery load được vào trang chưa, nếu chưa thì phải load jquery (vì sử dụng jquery ajax)
+            // $(document).ready(function () {alert("ok");});
+            function search() {
+                var key = document.getElementById("key").value;
+                if (key != '') {
+                    // hiển thị id = smart_search
+                    document.getElementById("smart_search").setAttribute("style", "display: block;");
+                    //document.getElementsByTagName(".content").setAttribute("style", "opacity: 1; visibility: visible;");
+                    // sử dụng jquery ajax get để lấy dữ liệu
+                    $.get("http://localhost:5166/Products/AjaxSearch?key=" + key, function (data) {
+                        // xóa các thẻ li
+                        $("#smart_search ul").empty();
+                        // thêm kết quả mới lấy được từ ajax
+                        $("#smart_search ul").append(data);
+                    });
+                } else
+                    document.getElementById("smart_search").setAttribute("style", "display: none;");
+            }
+        </script>
+        <!-- Menu shop -->
+        <div class="general_menu">
+            <a class="hover" href="/Products/Categories">
+                <div class="icon_shop"><i class="fa-brands fa-shopify"></i></div>
+                <span>Cửa hàng</span>
+            </a>
+        </div>
+        <!-- Menu search đơn hàng -->
+        <div class="general_menu">
+            <a class="hover" href="/Account/Orders">
+                <div class="icon_order"><i class="fa-solid fa-file-signature"></i></div>
+                <span>Tra cứu đơn hàng</span>
+            </a>
+        </div>
+        <!-- Menu cart -->
+        <div class="general_menu">
+            <a class="hover" href="/Cart">
+                <div class="icon_cart">
+                    <i class="fa-solid fa-cart-plus">
+                        <span style="font-size: 14px;
+                            color: black;
+                            position: absolute;
+                            margin-top: -7px;
+                            margin-left: -4px;
+                            background: #fff;
+                            border-radius: 50%;
+                            padding: 2px;" class="icon_cart">@Cart.CartQuantity(Context.Session)</span>
+                    </i>
+                </div>
+                <span>Giỏ hàng</span>
+            </a>
+        </div>
+        <!-- Menu wishlist -->
+        <div class="general_menu">
+            <a class="hover" href="/WishList">
+                <div class="icon_cart">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    @{
+                        string str_wish_list = Context.Session.GetString("wish_list");
+                        List<int> list_wish_list = new List<int>();
+                        if (!string.IsNullOrEmpty(str_wish_list))
+                        {
+                            list_wish_list = JsonConvert.DeserializeObject<List<int>>(str_wish_list);
+                        }
+                    }
+                    <span style="font-size: 14px;
+                                    color: black;
+                                    position: absolute;
+                                    margin-top: -3px;
+                                    margin-left: -4px;
+                                    background: #fff;
+                                    border-radius: 36%;
+                                    padding: 2px;
+                                    height: 18px;
+                                    font-weight: bold;" class="icon_cart">@list_wish_list.Count</span>
+                </div>
+                <span>Yêu thích</span>
+            </a>
+        </div>
+        <!-- Thông tin cá nhân-->
+        @if (String.IsNullOrEmpty(Context.Session.GetString("user_email")))
+        {
+            <div class="general_menu">
+                <a class="hover" href="/Account/Login">
+                    <div class="icon_cart"><i class="fa-regular fa-user"></i></div>
+                    <span>Login</span>
+                </a>
+            </div>
+
+        }
+        else
+        {
+            <div class="general_menu" style="text-align: center;">
+                <a class="hover" href="#">
+                    <div class="icon_cart"><i class="fa-solid fa-user-check"></i></div>
+                    <span>
+                        <p style="color: red; font-weight: bold;">@Context.Session.GetString("user_email") </p>
+                    </span>
+                </a>
+            </div>
+            <div class="general_menu">
+                <a class="hover" href="/Account/Logout" id="logoutButton">
+                    <div class="icon_cart"><i class="fa-solid fa-right-from-bracket"></i></div>
+                    <span>Logout</span>
+                </a>
+            </div>
+        }
+    </div>
+
+    <!-- Menu main botton -->
+    <div class="menu_botton">
+        <ul class="sub_menu_botton">
+            <li class="hover_phone">
+                <a href="~/Frontend/html/dienthoai.html">
+                    <i class="fa-solid fa-mobile"></i>
+                    <span>Điện thoại</span>
+                </a>
+
+            </li>
+            <li class="hover_laptop">
+                <a href="~/Frontend/html/laptop.html">
+                    <i class="fa-solid fa-laptop"></i>
+                    <span>Laptop</span>
+                </a>
+
+            </li>
+            <li class="hover_tablet">
+                <a href="~/Frontend/html/tablet.html">
+                    <i class="fa-solid fa-tablet"></i>
+                    <span>Máy tính bảng</span>
+                </a>
+
+            </li>
+            <li class="hover_watch">
+                <a href="~/Frontend/html/dongho.html">
+                    <i class="fa-solid fa-stopwatch"></i>
+                    <span>Đồng hồ thông minh</span>
+                </a>
+
+            </li>
+            <li class="hover_accessory">
+                <a href="~/Frontend/html/phukien.html">
+                    <i class="fa-solid fa-weight-hanging"></i>
+                    <span>Phụ kiện</span>
+                </a>
+
+            </li>
+            <li class="hover_appliances">
+                <a href="~/Frontend/html/giadung.html">
+                    <i class="fa-solid fa-toolbox"></i>
+                    <span>Gia dụng</span>
+                </a>
+
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-crown"></i>
+                    <span>Mua kèm gói cước</span>
+                </a>
+            </li>
+            <li class="hover_sim">
+                <a href="#">
+                    <i class="fa-solid fa-sim-card"></i>
+                    <span>Sim số - Dịch vụ</span>
+                </a>
+
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-dumpster-fire"></i>
+                    <span>Mua online giá rẻ</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<script>
+    document.getElementById("logoutButton").addEventListener("click", function (e) {
+        e.preventDefault(); // Ngăn chặn chuyển hướng mặc định
+
+        if (confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
+            // Nếu người dùng nhấn OK trong hộp thoại xác nhận, thực hiện đăng xuất
+            window.location.href = "/Account/Login";
+        }
+    });
+</script>

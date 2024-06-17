@@ -1,0 +1,225 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutHome.cshtml";
+}
+
+@* de phan trang thi phai using cac doi tuong sau *@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@* doi tuong thao tac file *@
+@using System.IO
+@* nhin thay file MyDbContext *@
+@using TTTN_ViettelStore.Models
+@using System.Globalization
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+    public ItemUsers GetUser(int _CustomerId)
+    {
+        //lay mot ban ghi
+        ItemUsers record = db.Users.Where(item => item.Id == _CustomerId).FirstOrDefault();
+        return record != null ? record : new ItemUsers();
+    }
+}
+
+<link rel="stylesheet" type="text/css" href="/Frontend/css/bootstrap.min.css">
+
+<div class="w-1170">
+
+    @if (Model.Count > 0)
+    {
+    <div class="name-cart">
+        <h2>Danh sách đơn hàng đã mua</h2>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
+                    <th>Ngày mua</th>
+                    <th>Giá</th>
+                    <th>Trạng thái</th>
+                    <th>Chi tiết</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                ItemUsers recordUser = GetUser(item.CustomerId);
+                <tbody>
+                    <tr class="tr-hover">
+                        <td>
+                            <div>
+                                <div class="name-user">
+                                    @recordUser.Name
+                                </div>
+                                <div>
+                                    @recordUser.Email
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            @recordUser.Address
+                        </td>
+                        <td>
+                            @recordUser.Phone
+                        </td>
+                        <td>
+                            @item.CreateTime.ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="price">
+                            @{
+                                decimal discountedPrice = Convert.ToInt32(item.Price);
+                                string formatedDiscountedPrice = discountedPrice.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                            }
+                            @formatedDiscountedPrice
+                        </td>
+                        <td>
+                            @if(item.Status == 0)
+                            {
+                                <div class="check-status-blue"></div>
+                                <div class="txt-blue">Chưa giao hàng</div>
+                            }else if(item.Status == 1)
+                            {
+                                <div class="check-status-green"></div>
+                                <div class="txt-green">Đã giao hàng</div>
+                            }else if(item.Status == 2)
+                            {
+                                <div class="check-status-red"></div>
+                                <div class="txt-red">Đã hủy đơn hàng</div>
+                            }
+                        </td>
+                        <td>
+                            <div class="info-product">
+                                <a href="/Account/Detail/@item.Id" type="button" data-modal-target="editUserModal" data-modal-show="editUserModal">
+                                    <img src="https://cdn.glitch.global/f28415ef-264f-4485-ba9d-c1c5b2db8686/info.png?v=1714021492573" />
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            }
+            </table>
+            @* ham sau se thuc hien viec hien thi phan trang *@
+            @Html.PagedListPager((IPagedList)Model, p => Url.Action("Index", new { page = p }))
+            @* Phân trang *@
+            <!--
+                Html.PagedListPager(Model, page => Url.Action("Read", new { page = page, a = 1, b = 2 }))
+            -->
+        </div>
+    }
+    else
+    {
+        <h2 style="text-align: center; margin: 0; padding: 20px 0 10px 0;">Hiện tại bạn chưa có đơn hàng nào</h2>
+        <h4 style="text-align: center; margin: 10px 0 0 0;">Hãy mua sắm sản phẩm bạn cần!</h4>
+    }
+
+</div>
+
+
+<style>
+    body {
+        font-family: sans-serif;
+    }
+
+    .txt-red {
+        color: red;
+    }
+
+    .txt-green {
+        color: green;
+    }
+
+    .txt-blue {
+        color: #00BFFF;
+    }
+
+    .w-1170 {
+        width: 1170px;
+        margin: auto;
+        padding-top: 1px;
+    }
+
+    table {
+        width: 100%;
+        font-size: 14px;
+        border-collapse: collapse;
+    }
+
+        table thead tr th {
+            text-transform: uppercase;
+            background: #00BFFF;
+            padding: 15px;
+            color: white;
+        }
+
+        table tbody tr td {
+            text-align: center;
+            padding: 35px 0;
+            border-bottom: 1px solid gray;
+            color: #6B7280;
+            position: relative;
+        }
+
+    .name-cart {
+        font-size: 20px;
+        text-transform: uppercase;
+        text-align: center;
+        margin: 25px 0;
+    }
+
+    .name-cart h2 {
+        font-weight: bold;
+    }
+
+    .tr-hover:hover {
+        background: rgb(232, 241, 250);
+    }
+
+    .name-user {
+        color: black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .check-status-red {
+        position: absolute;
+        left: 10%;
+        top: 44%;
+        width: 10px;
+        height: 10px;
+        border-radius: 100%;
+        background-color: red;
+    }
+
+    .check-status-green {
+        position: absolute;
+        left: 10%;
+        top: 44%;
+        width: 10px;
+        height: 10px;
+        border-radius: 100%;
+        background-color: green;
+    }
+
+    .check-status-blue {
+        position: absolute;
+        left: 10%;
+        top: 44%;
+        width: 10px;
+        height: 10px;
+        border-radius: 100%;
+        background-color: #00BFFF;
+    }
+
+    .price {
+        color: red;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .info-product a img {
+        width: 25px;
+        height: 25px;
+    }
+</style>

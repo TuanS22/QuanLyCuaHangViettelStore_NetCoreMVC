@@ -1,0 +1,188 @@
+﻿@using TTTN_ViettelStore.Models
+@using System.Globalization
+
+@{
+    Layout = "~/Views/Shared/LayoutHome.cshtml";
+}
+
+@{
+    List<int> list_wish_list = ViewBag.list_wish_list as List<int>;
+}
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    public ItemProducts GetProduct(int id)
+    {
+        ItemProducts record = db.Products.Where(item => item.Id == id).FirstOrDefault();
+        return record;
+    }
+}
+
+@if (list_wish_list != null)
+{
+    <section style="background-color: #eee; border-top: 1px solid #00BFFF">
+        <div class="container py-5">
+
+            @if (list_wish_list.Count > 0)
+            {
+                <h2 class="panel-heading" style="font-weight: bold; font-size: 26px; text-align: center; margin-bottom: 30px; padding: 12px;">Danh sách sản phẩm yêu thích</h2>
+            }
+            else
+            {
+                <h2 style="text-align:center; margin-top: 0.5px; padding-top: 15px; font-size: 20px; font-weight: bold;">Chưa có sản phẩm yêu thích</h2>
+                <h3 style="text-align:center; font-weight: bold;">Hãy thêm sản phẩm mà bạn yêu thích</h3>
+            }
+
+            <div class="row justify-content-center mb-3">
+                @foreach (var item in list_wish_list)
+                {
+                    var product = GetProduct(item);
+                    <div class="container">
+                        <div class="flex list-product mt-20 pd-15">
+                            <div class="list-product-img">
+                                <a>
+                                    <figure>
+                                        <img src="~/Upload/Products/@product.Photo" alt="@product.Name" />
+                                    </figure>
+                                </a>
+                            </div>
+                            <div class="list-product-name">
+                                <div>
+                                    <a href="">
+                                        <h4>@product.Name</h4>
+                                        <p>@Html.Raw(@product.Description)</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="list-product-price">
+                                <h2>
+                                    Giá: <strong style="font-weight: 400; color: red;">
+                                        @{
+                                            decimal discountedPrice = Convert.ToInt32((product.Price - (product.Price * product.Discount) / 100));
+                                            string formatedDiscountedPrice = discountedPrice.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                                        }
+                                        @formatedDiscountedPrice
+                                    </strong>
+                                </h2>
+                                <p>Free Ship</p>
+                                <div class="flex">
+                                    <div>
+                                        <a href="/Cart/Buy/@product.Id">
+                                            <i class="fa-solid fa-cart-arrow-down"></i> Giỏ hàng
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href="/WishList/Remove/@product.Id">
+                                            <i class="fa-regular fa-trash-can"></i> Xóa
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+    <style>
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .pd-15 {
+            padding: 15px 0;
+        }
+
+        figure {
+            width: 140px;
+            height: 140px;
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 0;
+        }
+
+            figure img {
+                width: 100%;
+                transition: .3s;
+            }
+
+                figure img:hover {
+                    transform: scale(1.1);
+                }
+
+        .flex {
+            display: flex;
+        }
+
+        .list-product {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid gray;
+        }
+
+        .list-product-img {
+            width: 15%;
+            margin-left: 2%;
+        }
+
+        .list-product-name {
+            width: 60%;
+            padding-right: 20px;
+            border-right: 1px solid #00BFFF;
+        }
+
+            .list-product-name a {
+                color: black;
+                text-decoration: none;
+            }
+
+            .list-product-name p {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+        .list-product-price {
+            padding-left: 20px;
+            width: 25%;
+        }
+
+            .list-product-price p {
+                padding-bottom: 18px;
+                color: green;
+            }
+
+            .list-product-price a {
+                color: black;
+                text-decoration: none;
+                border: 1px solid red;
+                padding: 6px;
+                border-radius: 5px;
+                background: white;
+            }
+
+                .list-product-price a:first-child {
+                    margin-right: 30px;
+                }
+
+                .list-product-price a:hover {
+                    background: #00BFFF;
+                    color: white;
+                }
+
+                .list-product-price a i {
+                    color: brown;
+                }
+
+                .list-product-price a:hover i {
+                    color: white;
+                }
+
+    </style>
+}
+else
+{
+    <h2 style="text-align:center; margin-top: 3px; padding-top: 15px; font-size: 20px; font-weight: bold;">Chưa có sản phẩm yêu thích</h2>
+    <h3 style="text-align:center; font-weight: bold;">Hãy thêm sản phẩm mà bạn yêu thích</h3>
+}

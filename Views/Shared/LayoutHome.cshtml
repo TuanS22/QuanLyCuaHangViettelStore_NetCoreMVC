@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>V Store - Quản lý cửa hàng điện tử</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='~/Frontend/css/trangchu.css'>
+    <link rel="stylesheet" href="~/Frontend/slick/slick.css">
+    <link rel="stylesheet" href="~/Frontend/css/slick_custom.css">
+    <link rel="stylesheet" href="~/Frontend/css/nav_footer.css">
+    <link rel="stylesheet" href="~/Frontend/font awesome/fontawesome-free-6.4.0-web/css/all.min.css">
+
+    <!-- CSS Stylesheets -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Frontend/img/Logo_Viettel Store.png">
+</head>
+
+<body>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/654f67c5cec6a912820ee04b/1hev2qnts';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+    @*import file Header.cshtml vào đây*@
+    @Html.Partial("~/Views/Shared/Header.cshtml")
+    <main>
+        @RenderBody()
+    </main>
+    <footer>
+        <!-- Thông tin liên hệ -->
+        <div class="footer_info">
+            <div class="container">
+                <div class="footer_top">
+                    <div class="footer_contact">
+                        <ul>
+                            <h4 style="font-size: 16px;">Tư vấn và đặt hàng</h4>
+                            <li>
+                                <a href="#">
+                                    Phương thức thanh toán
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Hướng dẫn đặt hàng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Góp ý, khiếu nại
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4 style="font-size: 16px;">Chính sách</h4>
+                            <li>
+                                <a href="#">
+                                    Chính sách bảo hành
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Chính sách đổi trả
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Chính sách giao hàng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Chính sách khui hộp
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Chính sách bảo mật
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4 style="font-size: 16px;">Tra cứu thông tin</h4>
+                            <li>
+                                <a href="#">
+                                    Tra cứu hóa đơn điện tử
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Tra cứu ưu đãi của bạn
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Trung tâm bảo hành
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4 style="font-size: 16px;">Tổng đài hỗ trợ (8h00 - 22h00)</h4>
+                            <li>
+                                Tư vấn bán hàng:
+                                <a href="#" class="phone_contact">1800 8123</a>
+                                (Miễn phí)
+                            </li>
+                            <li>
+                                CSKH & bảo hành:
+                                <a href="#" class="phone_contact">1900 8096</a>
+                            </li>
+                            <li>
+                                Tư vấn bán hàng Danh nghiệp:
+                                <a href="#" class="phone_contact">024665999666</a>
+                            </li>
+                            <li>
+                                Khảo sát mua hàng tại Viettel Store
+                            </li>
+                            <li>
+                                <div>
+                                    <a href="#" class="img_contact">
+                                        <img src="~/Frontend/img/bocongthuong.png" alt="">
+                                    </a>
+                                    <a href="#" class="img_contact">
+                                        <img src="~/Frontend/img/viettel_money.png" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="#" class="img_contact">
+                                    <img src="~/Frontend/img/boquocphong.png" alt="">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <h4 style="font-size: 16px;">Bản đồ</h4>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0511206899405!2d105.78047824850344!3d21.030640441681314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab4c7d5152a7%3A0xa6fd0e9a5a068a5f!2zVmnhu4d0IMOBIFRvd2Vy!5e0!3m2!1svi!2s!4v1690125380799!5m2!1svi!2s"
+                                width="265" height="265" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="footer_bottom">
+                    <div>
+                        © 2018 Công ty TNHH Nhà nước một thành viên Thương mại và Xuất khẩu Viettel. Đăng ký doanh nghiệp số 0104831030, do Sở Kế hoạch và Đầu tư Hà Nội cấp lần đầu ngày 25/01/2006,
+                        thay đổi lần thứ 38 ngày 01/07/2019. Địa chỉ: Số 01, phố Giang Văn Minh, phường Kim Mã, quận Ba Đình, thành phố Hà Nội. Chịu trách nhiệm nội dung: Lê Anh Tuấn
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tư vấn khách hàng -->
+        <div class="contect_phone">
+            <a href="#">
+                <i class="fa-solid fa-square-phone"></i>
+                Tư vấn khách hàng <b>1800 8123</b>
+            </a>
+        </div>
+
+        <!-- Scroll top -->
+        <div class="scroll_top" style="bottom: 85px;">
+            <a href="#top">
+                <i class="fa-solid fa-chevron-up"></i>
+                <p>Lên đầu</p>
+            </a>
+        </div>
+
+        <!-- Thông tin cá nhân-->
+        @if (String.IsNullOrEmpty(Context.Session.GetString("user_email")))
+        {
+            <div class="login">
+                <a href="/Account/Login">
+                    <i class="fa-solid fa-circle-user"></i>
+                    Tài khoản của tôi
+                </a>
+            </div>
+        }
+        else
+        {
+            <p></p>
+        }
+    </footer>
+
+    <script src="~/Frontend/slick/jquery-3.7.0.min.js"></script>
+    <script src="~/Frontend/slick/slick.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.banner').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev-banner"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next-banner"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 1,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.slide_img_top, .slide_right_top, .slide_right_botton').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev custom-prev-1"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next custom-next-1"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 1,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.slide_info_botton').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev custom-prev-2"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next custom-next-2"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 4,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.content_banner_2').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev custom-prev-2"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next custom-next-2"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 2,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.info_products').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 5,
+                speed: 1000,
+                slidesToScroll: 2
+            });
+
+        });
+    </script>
+    <script src="~/Frontend/js/trangchu.js"></script>
+</body>
+
+</html>

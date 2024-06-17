@@ -1,0 +1,336 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');
+
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.disflex {
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+}
+
+.mt_20 {
+    margin-top: 20px !important;
+}
+
+.mt_15 {
+    margin-top: 15px !important;
+}
+
+.mb_20 {
+    margin-bottom: 20px !important;
+}
+
+.pd_15 {
+    padding: 15px;
+}
+
+.pr_15 {
+    padding-right: 15px;
+}
+
+.title {
+    font-size: 18px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    border: 0;
+}
+
+h3 {
+    margin-bottom: 10px;
+}
+
+h4 {
+    margin-top: 10px;
+}
+
+.container {
+    max-width: 1170px;
+    margin: auto;
+}
+
+
+/* Main */
+main {
+    padding-top: 5px;
+    background-color: #EDEDED;
+    padding-bottom: 20px;
+}
+
+.content {
+    background-color: white;
+    border-radius: 10px;
+    padding-bottom: 20px;
+}
+
+
+/* Thông tin sản phẩm */
+.text1 a {
+    color: gray;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.text1_1 {
+    color: #000 !important;
+}
+
+.text1 .text1_1 i {
+    font-size: 9px;
+    padding: 3px;
+}
+
+/* Content banner 2 */
+.content_banner_2 {
+    margin-top: 26px;
+}
+
+.content_banner_2 div {
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px grey;
+}
+
+
+/* Slide banner phụ kiện */
+.content_left_product aside {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.content_left_product h3 a {
+    text-decoration: none;
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.content_left_product aside .content_img {
+    width: calc(100% / 6);
+    box-sizing: border-box;
+}
+
+.content_img {
+    text-align: center;
+}
+
+.content_img img {
+    transition: 0.8s;
+    width: 50%;
+    border-radius: 10px;
+}
+
+.content_img a span img:hover {
+    transform: scale(1.1);
+}
+
+.content_left_top {
+    margin-bottom: 20px;
+}
+
+.content_left_top, .content_left_bottom {
+    box-shadow: 2px 2px 5px gray;
+    border-radius: 10px;
+}
+
+
+/* Sắp xếp theo */
+.content_filter div {
+    border: 1px solid #e3e3e3;
+    padding: 5px;
+    margin-right: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+
+/* Các phụ kiện */
+.products {
+    margin-top: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.info_products {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.products_info {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 15px 4px 0 4px;
+    width: calc(20% - 8px);
+    padding: 20px;
+    box-shadow: 0 0 5px #ccc;
+    box-sizing: border-box;
+}
+
+.products_info a {
+    text-decoration: none;
+}
+
+.product_sale {
+    position: absolute;
+    background-color: #FFC803;
+    color: #000;
+    right: 0;
+    top: 0;
+    border-radius: 0 10px;
+    padding: 6px;
+    text-align: center;
+    z-index: 2;
+}
+
+.product_name h3 {
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 20px 0 5px 0;
+}
+
+.price_new {
+    color: #E90628;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.price_old {
+    color: #BDBDBD;
+    text-decoration: line-through;
+}
+
+.product_badge {
+    display: flex;
+}
+
+.product_badge p {
+    border: 1px solid #ccc;
+    margin: 5px 5px 5px 0;
+    padding: 0 8px;
+    border-radius: 5px;
+}
+
+.product_badge p a {
+    color: #337ab7;
+    font-size: 12px;
+}
+
+.info_text {
+    border: 1px solid #ccc;
+    font-size: 13px;
+    color: #000;
+    border-radius: 5px;
+}
+
+.info_text p {
+    padding: 10px 8px;
+}
+
+.img_info img {
+    transition: 0.8s;
+    margin-top: 30px;
+}
+
+.img_info img:hover {
+    transform: scale(1.1);
+}
+
+.view_more {
+    text-align: center;
+    padding-top: 20px;
+}
+
+.view_more a {
+    text-decoration: none;
+    color: #337ab7;
+    font-size: 14px;
+}
+
+
+/* Bài viết liên quan */
+.products {
+    margin-top: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.products_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0 0 15px;
+    font-weight: bold;
+}
+
+.products_title .view_all {
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 15px;
+    margin-right: 15px;
+    padding: 7px 20px;
+    background-color: #ccc;
+    border-radius: 30px;
+    background: #EDEDED;
+}
+
+.products_title .view_all a {
+    text-decoration: none;
+    color: #337ab7;
+}
+
+.list_img {
+    width: 50%;
+    text-align: center;
+}
+
+.list_img img {
+    border-radius: 10px;
+}
+
+.list_img_info {
+    padding-left: 20px;
+}
+
+.list_img_info a{
+    text-decoration: none;
+    color: #000;
+}
+
+.list_img_info div:last-child {
+    font-size: 14px;
+    color: #999999;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.post_left {
+    width: 51.1%;
+}
+
+.post_right {
+    width: 48.9%;
+}

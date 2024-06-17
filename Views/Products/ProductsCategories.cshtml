@@ -1,0 +1,123 @@
+﻿@*nhan dien cac file trong thu muc Models*@
+@using TTTN_ViettelStore.Models
+@using X.PagedList.Mvc.Core
+@*khai bao kieu du lieu cua Model*@
+@using System.Globalization @*thư viện sử dụng để format sang tiền vnđ*@
+@model X.PagedList.IPagedList<ItemProducts>
+@{
+    Layout = "~/Views/Shared/LayoutHomePage.cshtml";
+}
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    //lấy tên danh mục tương ứng với id truyền vào
+    public string GetCategoryName(int CategoryId)
+    {
+        ItemCategories record = db.Categories.Where(item => item.Id == CategoryId).FirstOrDefault();
+        if (record != null)
+        {
+            return record.Name;
+        }
+        return "Cửa hàng";
+    }
+}
+
+<div class="wrap-shop-control" style="background: #00BFFF; border-radius: 5px;">
+    <h1 class="shop-title" style="font-size: 18px; color: #fff;">@GetCategoryName(ViewBag.CategoryId)</h1>
+
+    <div class="wrap-right">
+
+        <div class="sort-item orderby">
+            <select id="orderby" onchange="location.href='/Products/Categories/@ViewBag.CategoryId?order='+document.getElementById('orderby').value;" class="use-chosen">
+                <option value="">Sắp xếp</option>
+                <option @if (ViewBag.order == "name-asc")
+                {
+                    <text>selected</text>
+                } value = "name-asc" >Sắp xếp theo thứ tự</option>
+                <option @if (ViewBag.order == "name-desc")
+                {
+                    <text>selected</text>
+                } value="name-desc">Sắp xếp ngược lại</option>
+                <option @if (ViewBag.order == "price-asc")
+                {
+                    <text>selected</text>
+                } value="price-asc">Sắp xếp giá từ thấp - cao</option>
+                <option @if (ViewBag.order == "price-desc")
+                {
+                    <text>selected</text>
+                } value="price-desc">Sắp xếp giá từ cao - thấp</option>
+            </select>
+        </div>
+
+    </div>
+</div><!--end wrap shop control-->
+
+<div class="row">
+
+    <ul class="product-list grid-products equal-container">
+        @foreach (var item in Model)
+        {
+            <li class="col-lg-4 col-md-6 col-sm-6 col-xs-6 ">
+                <div class="product product-style-3 equal-elem">
+                    <div class="product-thumnail">
+                        <a href="/Products/Detail/@item.Id" title="@item.Name">
+                            <figure style="border-radius: 10px;">
+                                <img src="~/Upload/Products/@item.Photo" alt="@item.Name" style="border-radius: 10px; height: 250px; object-fit: cover;">
+                            </figure>
+                        </a>
+                    </div>
+                    <div class="product-info">
+                        <b style="font-size: 16px;"><a href="/Products/Detail/@item.Id" class="product-name">@Html.Raw(item.Name)</a></b>
+                        <div class="wrap-price">
+                            <span class="product-price">
+                                @{
+                                    decimal discountedPrice = Convert.ToInt32(item.Price - (item.Price * item.Discount) / 100);
+                                    string formatedDiscountedPrice = discountedPrice.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                                }
+                                @formatedDiscountedPrice
+                            </span>
+                        </div>
+                        <!-- rating & rating & cart -->
+                        <div class="wrap-price">
+                            <div class="product-price">
+                                <p href="#" style="margin-right: 3px;">@Html.Raw(item.Description)</p>
+                            </div>
+                        </div>
+                        <div class="wrap-price" style="justify-content: space-between;">
+                            <div class="product-price">
+                                <a href="/Products/Rate/@item.Id?star=1" style="margin-right: 3px;"><i class="fa fa-star" style="color:#efce4a; padding: 0 2px;"></i></a>
+                                <a href="/Products/Rate/@item.Id?star=2" style="margin-right: 3px;"><i class="fa fa-star" style="color:#efce4a; padding: 0 2px;"></i></a>
+                                <a href="/Products/Rate/@item.Id?star=3" style="margin-right: 3px;"><i class="fa fa-star" style="color:#efce4a; padding: 0 2px;"></i></a>
+                                <a href="/Products/Rate/@item.Id?star=4" style="margin-right: 3px;"><i class="fa fa-star" style="color:#efce4a; padding: 0 2px;"></i></a>
+                                <a href="/Products/Rate/@item.Id?star=5" style="margin-right: 3px;"><i class="fa fa-star" style="color:#efce4a; padding: 0 2px;"></i></a>
+                            </div>
+                            <div style="display: flex;">
+                                <div style="margin-right: 5px; width: 45px;">
+                                    <a href="/WishList/Add/@item.Id" class="btn add-to-cart"><i class="fa-solid fa-heart-circle-plus"></i></a>
+                                </div>
+                                <div style="width: 70px;">
+                                    <a href="/Cart/Buy/@item.Id" class="btn add-to-cart"><i class="fa-solid fa-cart-arrow-down"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+@*<div class="wrap-pagination-info">
+        <ul class="page-numbers">
+            @for (int i = 1; i <= @Model.PageCount; i++)
+            {
+                <li><a class="page-number-item" href="/Products/Categories/@ViewBag.CategoryId?page=@i">@i</a></li>
+            }
+        </ul>
+    </div>*@
+
+@* Phân trang *@
+@Html.PagedListPager(Model, page => Url.Action("Read", new { page = page, a = 1, b = 2 }))
+

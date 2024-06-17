@@ -1,0 +1,428 @@
+﻿@using TTTN_ViettelStore.Models
+@using System.Globalization
+
+@{
+    Layout = "~/Views/Shared/LayoutHome.cshtml";
+}
+
+<div class="container">
+    
+    @if(!String.IsNullOrEmpty(Context.Request.Query["notify"]))
+    {
+        if(Context.Request.Query["notify"] == "destroy-success")
+        {
+            <h2 style="text-align: center; margin: 0.5px;">Đã xóa toàn bộ sản phẩm thành công!</h2>
+        }
+        if (Context.Request.Query["notify"] == "checkout-success")
+        {
+            <h2 style="text-align: center; padding-top: 30px; margin: 0;">Đã thanh toán toàn bộ sản phẩm thành công!</h2>
+        }
+    }
+
+    @if (Model.Count > 0)
+    {
+        <div style="border-top: 1px solid #00BFFF;">
+            <h1 style="margin: 0; padding: 20px 0 10px 0; text-align: center;">Giỏ hàng <span>(@Cart.CartQuantity(Context.Session) sản phẩm)</span></h1>
+        </div>
+        <!-- Đang sử dụng class Cart phương thức Update -->
+        <form method="post" action="/Cart/Update">
+            <div class="flex">
+                <!-- Thông tin sản phẩm -->
+                    <div class="table-cart">
+                    @foreach (var item_cart in Model)
+                    {
+                        <table class="table-hover" style="border-collapse: collapse; display: flex; align-items: center; border-bottom: 1px solid gray;">
+                            <tbody class="w-100" style="padding: 5px 0;">
+                                <tr>
+                                    <td rowspan="2" style="padding-right: 10px;">
+                                        <a href="/Products/Detail/@item_cart.ProductRecord.Id">
+                                            <figure>
+                                                <img src="/Upload/Products/@item_cart.ProductRecord.Photo" alt="" title="@item_cart.ProductRecord.Name" />
+                                            </figure>
+                                        </a>
+                                    </td>
+                                    <td style="width: 60%;">
+                                        <a href="/Products/Detail/@item_cart.ProductRecord.Id" style="color: black;">
+                                            <h5 class="name-wrap">@item_cart.ProductRecord.Name</h5>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <input class="input-quantity" type="number" name="product_@item_cart.ProductRecord.Id" value="@item_cart.Quantity" data-max="120" pattern="[0-9]*" min="1" style="border: 0;" />
+                                        <!-- Input kiểu số với nút tăng giảm -->
+                                        @*
+                                            <div class="input-group mb-3" style="width: 20%;">
+                                            <button style="cursor: pointer;" class="input-group-text" id="basic-addon-minus">-</button>
+                                            <input type="text" name="product_@item_cart.ProductRecord.Id" value="@item_cart.Quantity" data-max="120" pattern="[0-9]*" class="form-control" id="quantity" aria-describedby="basic-addon-minus basic-addon-plus" style="text-align: center; padding: 0; min-width: 50px;" min="1">
+                                            <button style="cursor: pointer;" class="input-group-text" id="basic-addon-plus">+</button>
+                                            </div>
+                                        *@
+                                    </td>
+                                    <td style="width: 6%;">
+                                        <a class="delete-hover" href="/Cart/Remove/@item_cart.ProductRecord.Id">
+                                            <img style="width=" 30px"; height="30px" src="https://cdn.glitch.global/5bda74c3-3a29-4d99-a4c6-fea3276fa04a/delete.png?v=1713544605646" />
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="width: 25%; color: red;">
+                                        @{
+                                            decimal discountedPrice = Convert.ToInt32((item_cart.Quantity * (item_cart.ProductRecord.Price - (item_cart.ProductRecord.Price * item_cart.ProductRecord.Discount) / 100)));
+                                            string formatedDiscountedPrice = discountedPrice.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                                        }
+                                        @formatedDiscountedPrice
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                    <div style="margin-top: 25px; font-size: 16px;">
+                            <p style="font-family: monospace;"><span style="font-weight: bold; color: red;">Lưu ý:</span> Sau khi tăng số lượng hãy cập nhật giỏ hàng!</p>
+                        </div>
+                        <!-- Thông tin phone -->
+                        <div class="container mt-2">
+                        <div class="col-md-7">
+                            <p style="margin: 20px 0 15px 0; font-family: monospace; font-size: 16px;"><span style="font-weight: bold; color: red;">Hỗ trợ:</span> Nếu bạn còn thắc mắc hãy để lại số điện thoại!</p>
+                                <div class="form-group d-inline-block">
+                                <span class="border-end country-code px-2"><img src="https://cdn.glitch.global/46985c08-b828-42b8-9e54-01360209f442/flagVN.png?v=1713797012560" style="width:20px; height: 20px;" /> +84</span>
+                                    <input type="text" class="form-control" id="ec-mobile-number" aria-describedby="emailHelp" placeholder="398996397" />
+                                    <button type="button" class="btn-submid-phone">Gửi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                <!-- Thanh toán -->
+                <div class="table_right">
+                    <div>
+                        <p style="margin: 0 0 5px 0; font-size: 10px; color: red; font-family: monospace;">Nếu tăng số lượng hãy cập nhật lại giỏ hàng!</p>
+                    </div>
+                    <div class="flex">
+                        <div class="update-cart">
+                            <input type="submit" class="btn-update" value="Cập nhật giỏ hàng" />
+                        </div>
+                        <div class="delete-all">
+                            <a href="/Cart/Destroy">
+                                Xóa tất cả
+                            </a>
+                        </div>
+                    </div>
+                    <div class="price-all">
+                        <div style="border-bottom: 1px solid red; margin-bottom: 10px;">
+                            <h5 style="text-transform: uppercase; margin-bottom: 0; font-size: 18px;">Thanh toán</h5>
+                        </div>
+                        <div>
+                            <div class="flex pb-10">
+                                <div>
+                                    <p style="font-weight: bold">Sản phẩm:</p>
+                                </div>
+                                <div>
+                                    <p>
+                                        @Cart.CartQuantity(Context.Session)
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex pb-10">
+                                <div>
+                                    <p style="font-weight: bold">Giá:</p>
+                                </div>
+                                <div>
+                                    <p style="color: red;">
+                                        @{
+                                            decimal discountedPrice1 = Convert.ToInt32(Cart.CartTotal(Context.Session));
+                                            string formatedDiscountedPrice1 = discountedPrice1.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                                        }
+                                        @formatedDiscountedPrice1
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pay-cart">
+                            <p>Chọn hình thức thanh toán</p>
+                        </div>
+                        <div>
+                            <div class="pay-cod">
+                                <a href="/Cart/CheckOut">COD</a>
+                            </div>
+                            <div class="pay-cod">
+                                <a href="#">
+                                    <img src="" />Momo
+                                </a>
+                            </div>
+                            <div class="pay-cod">
+                                <a href="#">
+                                    <img src="" />VNPay
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    }
+    else
+    {
+        <h2 style="text-align: center; margin: 0; padding: 20px 0 10px 0;">Hiện tại chưa có sản phẩm nào trong giỏ hàng</h2>
+    }
+    <!-- Điều khoản của V Store -->
+    <div class="use_vt mg_20" style="margin: 30px 0 0 0;">
+        <p style="font-size: 16px; text-align: center; font-family: monospace;">Bằng cách đặt hàng, bạn đồng ý với <a href="#" class="color_red">Điều khoản</a> sử dụng của V Store</p>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const minusButton = document.getElementById('basic-addon-minus');
+      const plusButton = document.getElementById('basic-addon-plus');
+      const quantityInput = document.getElementById('quantity');
+
+      // Sự kiện khi nhấn nút giảm
+      minusButton.addEventListener('click', function () {
+        let currentValue = parseInt(quantityInput.value);
+        if (!isNaN(currentValue) && currentValue > 0) {
+            if(quantityInput.value == 1)
+            {
+                quantityInput.value = 1;
+            }
+            else
+                quantityInput.value = currentValue - 1;
+        }
+
+      });
+
+      // Sự kiện khi nhấn nút tăng
+      plusButton.addEventListener('click', function () {
+        let currentValue = parseInt(quantityInput.value);
+        if (!isNaN(currentValue)) {
+          quantityInput.value = currentValue + 1;
+        } else {
+          quantityInput.value = 1; // Nếu giá trị không hợp lệ, thiết lập thành 1
+        }
+      });
+    });
+</script>
+
+<style>
+    .pb-10 {
+        padding-bottom: 10px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .container {
+        max-width: 1170px;
+        padding: 0;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    .table-hover:hover {
+        background: #dddddd
+    }
+
+    .name-wrap {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .btn-update {
+        border: 0;
+        padding: 8px;
+        border-radius: 5px;
+        margin-top: 5px;
+        background: white;
+    }
+
+    figure {
+        margin: 0;
+        width: 140px;
+        height: 140px;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+
+        figure img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            transition: .3s ease;
+        }
+
+            figure img:hover {
+                transform: scale(1.1);
+            }
+
+    .flex {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .table-cart {
+        width: 76%;
+        border-top: 1px solid #00BFFF;
+        border-radius: 6px;
+    }
+
+    .table_right {
+        width: 21%;
+        height: 100%;
+        border-top: 1px solid #00BFFF;
+        border-radius: 6px;
+        background: #DFDFDF70;
+        padding: 20px 10px;
+    }
+
+    .pay-cart {
+        border-radius: 10px;
+        padding: 5px 0;
+        transition: .2s;
+    }
+
+        .pay-cart p {
+            color: black;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+
+    .update-cart {
+        border-radius: 8px;
+        transition: .3s;
+    }
+
+        .update-cart:hover {
+            box-shadow: 4px 6px 4px #6bdaff;
+        }
+
+    .delete-all {
+        margin-top: 12px;
+    }
+
+        .delete-all a {
+            background: white;
+            border-radius: 5px;
+            padding: 9px 0;
+            color: black;
+            transition: .3s;
+            font-size: 13px;
+        }
+
+            .delete-all a:hover {
+                box-shadow: 4px 6px 4px #6bdaff;
+            }
+
+    .price-all {
+        margin-top: 20px;
+    }
+
+
+    .pay-cod {
+        width: 100%;
+        margin: 12px 0;
+    }
+
+        .pay-cod a {
+            display: block;
+            background: #00BFFF;
+            color: white;
+            width: 100%;
+            font-weight: bold;
+            padding: 5px 0;
+            border-radius: 6px;
+            text-align: center;
+            transition: .3s;
+        }
+
+            .pay-cod a:hover {
+                box-shadow: 4px 6px 4px #6bdaff;
+                background: #00b4ee
+            }
+
+    .delete-hover {
+        display: block;
+        margin-right: 4px;
+        padding: 5px 10px;
+        text-align: center;
+        width: 50px;
+        height: 100%;
+        overflow: hidden;
+    }
+
+        .delete-hover img {
+            transition: .3s;
+        }
+
+        .delete-hover:hover img {
+            color: red;
+            transform: scale(1.3);
+            box-shadow: 4px 6px 1px #6bdaff;
+            border: 1px solid #00BFFF;
+            border-radius: 5px;
+        }
+
+    .input-quantity {
+        max-width: 40%;
+        border-radius: 10px;
+        text-align: center;
+        border: 0;
+        padding: 5px;
+    }
+
+        .input-quantity:focus {
+            border: 1px solid #00BFFF;
+        }
+
+    .input-group {
+        flex-wrap: nowrap;
+    }
+
+    .form-group {
+        border: 1px solid #ced4da;
+        margin-top: 5px;
+        padding: 5px;
+        border-radius: 6px;
+        width: 310px;
+        font-family: monospace;
+    }
+
+        .form-group:focus {
+            color: #212529;
+            background-color: #fff;
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+        }
+
+        .form-group input {
+            display: inline-block;
+            width: auto;
+            border: none;
+            padding: 5px 5px 5px 15px;
+            border-radius: 5px;
+        }
+
+            .form-group input:focus {
+                box-shadow: none;
+            }
+
+
+    .btn-submid-phone {
+        padding: 5px 15px;
+        font-family: monospace;
+        border: 1px solid #00BFFF;
+        border-radius: 5px;
+    }
+
+    .btn-submid-phone:hover {
+        background: #10a510;
+        color: white;
+    }
+
+</style>

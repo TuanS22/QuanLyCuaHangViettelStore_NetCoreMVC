@@ -1,0 +1,171 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = TTTN_ViettelStore
+build_property.RootNamespace = TTTN_ViettelStore
+build_property.ProjectDir = D:\Hunre\TTTN\TTTN_ViettelStore\TTTN_ViettelStore\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\Hunre\TTTN\TTTN_ViettelStore\TTTN_ViettelStore
+build_property._RazorSourceGeneratorDebug = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Adv/CreateUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWR2XENyZWF0ZVVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Adv/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWR2XFJlYWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Categories/CreateUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xDcmVhdGVVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Categories/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xSZWFkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/HomeQtv/CreateUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcSG9tZVF0dlxDcmVhdGVVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/HomeQtv/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcSG9tZVF0dlxSZWFkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/News/CreateUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcTmV3c1xDcmVhdGVVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/News/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcTmV3c1xSZWFkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Order/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJcRGV0YWlsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Order/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJcUmVhZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Products/CreateUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUHJvZHVjdHNcQ3JlYXRlVXBkYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Products/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUHJvZHVjdHNcUmVhZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/QtvWeb/LoginQtv.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUXR2V2ViXExvZ2luUXR2LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Shared/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2hhcmVkXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Shared/IndexQtv.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2hhcmVkXEluZGV4UXR2LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Slides/CreateUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2xpZGVzXENyZWF0ZVVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Slides/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2xpZGVzXFJlYWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Tags/CreateUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVGFnc1xDcmVhdGVVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Tags/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVGFnc1xSZWFkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Users/CreateUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVXNlcnNcQ3JlYXRlVXBkYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Areas/Admin/Views/Users/Read.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVXNlcnNcUmVhZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Account/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Account/Orders.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxPcmRlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Cart/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/News/NewsDetail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmV3c1xOZXdzRGV0YWlsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Products/ProductsCategories.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcUHJvZHVjdHNDYXRlZ29yaWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Products/ProductsDetail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcUHJvZHVjdHNEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Products/SearchName.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcU2VhcmNoTmFtZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Products/SearchPrice.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcU2VhcmNoUHJpY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Products/Tag.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcVGFnLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Shared/Header.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEhlYWRlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Shared/LayoutHome.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXExheW91dEhvbWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/Shared/LayoutHomePage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXExheW91dEhvbWVQYWdlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Hunre/TTTN/TTTN_ViettelStore/TTTN_ViettelStore/Views/WishList/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2lzaExpc3RcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

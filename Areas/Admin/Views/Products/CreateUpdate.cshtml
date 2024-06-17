@@ -1,0 +1,334 @@
+﻿@using TTTN_ViettelStore.Models;
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/Index.cshtml";
+}
+
+@{
+    string _Name = Model != null ? Model.Name : "";
+    string _Description = Model != null ? Model.Description : "";
+    string _Photo = Model != null ? Model.Photo : "";
+    int _Hot = Model != null && Model.Hot == 1 ? 1 : 0;
+    double _Discount = Model != null ? Model.Discount : 0;
+    double _Price = Model != null ? Model.Price : 0;
+}
+
+@functions{
+    public MyDbContext db = new MyDbContext();
+
+    // hàm liệt kê các danh sách sản phẩm
+    public List<ItemCategories> GetCategories()
+    {
+        // sử dụng linq để truy vấn 3 bảng Categories, CategoriesProduct, Products
+        var result = db.Categories.OrderByDescending(item => item.Id).ToList();
+        return result;
+    }
+
+    public List<ItemCategories> GetSubCategories(int _CategoryId)
+    {
+        // sử dụng linq để truy vấn 3 bảng Categories, CategoriesProduct, Products
+        var result = db.Categories.Where(item => item.ParentId == _CategoryId).OrderByDescending(item => item.Id).ToList();
+        return result;
+    }
+
+    // hàm kiểm tra danh mục sản phẩm có được check k
+    public bool CheckCategory(int _ProductId, int _CategoryId)
+    {
+        // sử dụng linq join 3 bảng Categories, CategoriesProduct, Products 
+        var result = (from item_category in db.Categories
+                      join item_category_product in db.CategoriesProduct on item_category.Id equals item_category_product.CategoryId
+                      join item_product in db.Products on item_category_product.ProductId equals item_product.Id
+                      where item_product.Id == _ProductId && item_category.Id == _CategoryId
+                      select item_category).FirstOrDefault();
+        if(result != null)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    // hàm liệt kê các tag
+    public List<ItemTags> GetTags()
+    {
+        var result = db.Tags.OrderByDescending(item => item.Id).ToList();
+        return result;
+    }
+
+    public bool CheckTag(int _ProductId, int _TagId)
+    {
+        // sử dụng linq để join 3 bảng Tags, TagsProducts, Product để lấy ra kết quả
+        var result = (from item_tag in db.Tags
+                      join item_tag_product in db.TagsProducts on item_tag.Id equals item_tag_product.TagId
+                      join item_product in db.Products on item_tag_product.ProductId equals item_product.Id
+                      where item_product.Id == _ProductId && item_tag.Id == _TagId
+                      select item_tag).FirstOrDefault();
+        if (result != null)
+        {
+            return true;
+        }
+        return false;
+    }
+}
+
+<!-- Để load ckeditor vào trang thì phải có dòng dưới đây-->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+
+<div class="bg-gray-500 h-screen w-screen sm:px-8 md:px-16 sm:py-8 h-auto">
+    <main class="container mx-auto max-w-screen-lg h-full">
+        <!-- file upload modal -->
+        <article aria-label="File Upload Modal" class="relative h-full flex flex-col bg-white shadow-xl rounded-md" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" ondragleave="dragLeaveHandler(event);" ondragenter="dragEnterHandler(event);">
+            <section class="h-full overflow-auto p-8 w-full h-full flex flex-col">
+
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-body">
+                            @* autocomplete="off" sẽ bỏ các thông tin catche của trình duyệt lưu vào ô textbox *@
+                            @*Muốn upload được file thì trong thẻ form phải có thuộc tính sau: enctype="multipart/form-data"*@
+                            <form method="post" action="@ViewBag.action" enctype="multipart/form-data" autocomplete="off">
+                                <!-- rows -->
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-2" style="font-size: 1.5rem; color: black;">Photo</div>
+                                    <div class="col-md-10">
+                                        <input type="file" name="Photo" id="file" class="inputfile" data-multiple-caption="{count} files" multiple />
+                                        <label for="file">
+                                            <span>
+                                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                                Chọn file
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- end rows -->
+                                <!-- rows -->
+                                <div class="row" style="margin-top:30px;">
+                                    <div class="flex">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" name="Name" placeholder="Tên sản phẩm" required value="@_Name">
+                                            <label style="padding: 19px 12px; font-size: 14px; color: black; font-weight: bold;">
+                                                Tên sản phẩm
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end rows -->
+                                <!-- rows -->
+                                <div class="row" style="margin-top:30px;">
+                                    <div class="flex">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" name="Price" placeholder="Giá sản phẩm" required value="@_Price">
+                                            <label style="padding: 19px 12px; font-size: 14px; color: black; font-weight: bold;">
+                                                Giá sản phẩm
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end rows -->
+                                <!-- rows -->
+                                <div class="row" style="margin-top:30px;">
+                                    <div class="flex">
+                                        <div class="form-floating">
+                                            @{
+                                                string str_discount = "0";
+                                                if(Model != null)
+                                                {
+                                                    str_discount = Model.Discount.ToString();
+                                                }
+                                            }
+                                            <input type="number" class="form-control" name="Discount" placeholder="Giảm giá" required value="@str_discount">
+                                            <label style="padding: 19px 12px; font-size: 14px; color: black; font-weight: bold;">
+                                                Giảm giá
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end rows -->
+                                <!-- rows -->
+                                <div class="row" style="margin: 10px 0;">
+                                    <div class="col-md-2" style="font-size: 1.5rem; color: black;">Categories</div>
+                                    <div class="col-md-10">
+                                        @{
+                                            var list_categories = GetCategories();
+                                        }
+
+                                        <!--Nếu thêm thuộc tính multiple thì có nghĩa là có thể chọn được nhiều danh mục-->
+                                        <select name="Categories" id="Categories" class="form-control" style="font-size: 1.5rem; margin: 10px 0; overflow:scroll; height: 200px;" multiple>
+                                            @foreach (var item in list_categories)
+                                            {
+                                                string str_selected = "";
+                                                if (Model != null && CheckCategory(Model.Id, item.Id) == true)
+                                                {
+                                                    str_selected = "selected";
+                                                }
+
+                                                <option @str_selected value="@item.Id" style="width: 200px; margin: 3px 0px; border: 0.5px solid red; cursor: pointer; border-radius: 5px;">
+                                                    @item.Name
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- end rows -->
+
+                                <!-- rows -->
+                                <div class="row" style="margin: 10px 0;">
+                                    <div class="col-md-2" style="font-size: 1.5rem; color: black;">Tag</div>
+                                    <div class="col-md-10">
+                                        <div style="font-size: 1.2rem; height: 100px; overflow:scroll; border: 1px solid #dddddd;">
+                                            @{
+                                                var list_tags = GetTags();
+                                            }
+                                            @foreach (var item in list_tags)
+                                            {
+                                                string str_tag_checked = "";
+                                                if (Model != null && CheckTag(Model.Id, item.Id) == true)
+                                                {
+                                                    str_tag_checked = "checked";
+                                                }
+                                                <div style="margin-bottom:5px;">
+                                                    &nbsp; &nbsp;<input type="checkbox" @str_tag_checked name="Tags" value="@item.Id" id="Tag_@item.Id" />
+                                                    <label for="Tag_@item.Id"> @item.Name</label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end rows -->
+                                <!-- rows -->
+                                <div class="row" style="margin: 10px 0;">
+                                    <div class="col-md-2" style="font-size: 1.5rem; color: black;">Hot</div>
+                                    <div class="col-md-10">
+                                        <div class="col-md-10">
+                                            @{
+                                                string str_checked = "";
+                                                if (Model != null && Model.Hot == 1)
+                                                {
+                                                    str_checked = "checked";
+                                                }
+                                            }
+                                            <input type="checkbox" @str_checked name="Hot" id="Hot" />
+                                            <label for="Hot">Hot</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end rows -->
+                                <!-- rows -->
+                                <div class="row" style="margin: 10px 0;">
+                                    <div class="col-md-2" style="font-size: 1.5rem; color: black;">Description</div>
+                                    <div class="col-md-10">
+                                        <div class="col-md-10">
+                                            <textarea name="Description" id="Description">@_Description</textarea>
+                                            <script style="font-size: 1.5rem;">
+                                                ClassicEditor
+                                                    .create(document.querySelector('#Description'))
+                                                    .catch(error => {
+                                                        console.error(error);
+                                                    });
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end rows -->
+
+                                <!-- sticky footer -->
+                                <footer class="flex justify-end px-8 pb-8 pt-4">
+                                    <div class="">
+                                        <input type="submit" value="Lưu" class="rounded-sm px-4 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none">
+                                    </div>
+                                    <div class="text-black px-2 ml-4 border-1 border-blue-500 rounded-sm hover:bg-gray-300">
+                                        <a href="/Admin/Products/Read">Quay lại</a>
+                                    </div>
+                                </footer>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+    <style type="text/css">
+        .ck-editor__editable {
+            min-height: 300px;
+            max-height: 300px;
+            overflow: scroll;
+        }
+
+        .inputfile {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        label {
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .inputfile + label {
+            width: 150px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            color: black;
+            background-color: white;
+            display: inline-block;
+            cursor: pointer;
+            border: 2px solid gray;
+        }
+
+            .inputfile:focus + label,
+            .inputfile + label:hover {
+                border: 2px groove red;
+                color: gray;
+            }
+
+            .inputfile + label span i {
+                padding-right: 5px;
+                color: red;
+            }
+
+        .form-floating {
+            width: 100%;
+        }
+
+            .form-floating > .form-control {
+                height: 60px;
+                min-height: 60px;
+                font-size: 18px;
+            }
+    </style>
+</div>
+
+<script>
+    var inputs = document.querySelectorAll('.inputfile');
+    Array.prototype.forEach.call(inputs, function (input) {
+        var label = input.nextElementSibling,
+            labelVal = label.innerHTML;
+
+        input.addEventListener('change', function (e) {
+            var fileName = '';
+            var img;
+            if (this.files && this.files.length > 1) {
+                fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+            }
+            else
+                fileName = e.target.value.split('\\').pop();
+
+            if (fileName) {
+                // Tạo một thẻ <i> mới chứa biểu tượng trước tên ảnh
+                var icon = document.createElement('i');
+                icon.classList.add('fa-regular', 'fa-image');
+
+                // Chèn thẻ <i> vào label trước nội dung tên file
+                label.querySelector('span').innerHTML = '';
+                label.querySelector('span').appendChild(icon);
+                label.querySelector('span').innerHTML += fileName;
+            }
+            else
+                label.innerHTML = labelVal;
+        });
+    });
+</script>

@@ -1,0 +1,433 @@
+﻿@using TTTN_ViettelStore.Models
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+    //lay tat ca cac danh muc cha
+    public List<ItemCategories> GetCategories()
+    {
+        List<ItemCategories> list_record = db.Categories.Where(item => item.ParentId == 0).OrderByDescending(item => item.Id).ToList();
+        return list_record;
+    }
+    //lay cac danh muc con
+    public List<ItemCategories> GetSubCategories(int CategoryId)
+    {
+        List<ItemCategories> list_record = db.Categories.Where(item => item.ParentId == CategoryId).OrderByDescending(item => item.Id).ToList();
+        return list_record;
+    }
+
+    public List<ItemTags> GetTags()
+    {
+        List<ItemTags> list_record = db.Tags.OrderByDescending(item => item.Id).ToList();
+        return list_record;
+    }
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>V Store - Quản lý cửa hàng điện tử</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" type="text/css" href="~/Frontend/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="~/Frontend/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Frontend/css/chosen.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Frontend/css/color-01.css">
+    <link rel="stylesheet" type="text/css" href="~/Frontend/css/style.css">
+
+    <link rel='stylesheet' type='text/css' media='screen' href='~/Frontend/css/trangchu.css'>
+    <link rel="stylesheet" href="~/Frontend/slick/slick.css">
+    <link rel="stylesheet" href="~/Frontend/css/slick_custom.css">
+    <link rel="stylesheet" href="~/Frontend/css/nav_footer.css">
+    <link rel="stylesheet" href="~/Frontend/font awesome/fontawesome-free-6.4.0-web/css/all.min.css">
+
+    <!-- CSS Stylesheets -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Frontend/img/Logo_Viettel Store.png">
+</head>
+
+<body>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/654f67c5cec6a912820ee04b/1hev2qnts';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+    @*import file Header.cshtml vào đây*@
+    @Html.Partial("~/Views/Shared/Header.cshtml")
+
+    <!--main area-->
+    <main id="main" class="main-site left-sidebar" style="background: #f2f2f2">
+        <div class="container">
+            <div class="row" style="margin-top:15px;">
+
+                <div class="col-lg-9 col-md-8 col-sm-8 col-xs-12 main-content-area">
+
+                    @RenderBody()
+
+                </div><!--end main products area-->
+
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 sitebar" style="margin-top: 15px; border-top: 1px solid #00BFFF;">
+                    <div class="widget mercado-widget categories-widget">
+                        <h1 class="widget-title">Tất cả danh mục</h1>
+                        <div class="widget-content">
+                            <ul class="list-category">
+                                @{
+                                    List<ItemCategories> list_categories = GetCategories();
+                                }
+                                @foreach (var item in list_categories)
+                                {
+                                    <li class="category-item has-child-cate">
+                                        <a href="/Products/Categories/@item.Id" class="cate-link">@item.Name</a>
+                                        @{
+                                            List<ItemCategories> list_sub_categories = GetSubCategories(item.Id);
+                                        }
+                                        @if (list_sub_categories.Count > 0)
+                                        {
+                                            <span class="toggle-control">+</span>
+                                            <ul class="sub-cate">
+                                                @foreach (var item_sub in list_sub_categories)
+                                                {
+                                                    <li class="category-item"><a href="/Products/Categories/@item_sub.Id" class="cate-link">@item_sub.Name</a></li>
+                                                }
+                                            </ul>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div><!-- Categories widget-->
+
+                    <div class="widget mercado-widget filter-widget price-filter">
+                        <h2 class="widget-title">Giá</h2>
+                        <div class="widget-content">
+                            <input type="number" min="0" id="from_price" style="width:100px; border:1px solid #00BFFF; font-weight: bold; padding: 4px; border-radius: 5px;" placeholder="giá từ">
+                            -
+                            <input type="number" min="0" id="to_price" style="width:100px; border:1px solid #00BFFF; font-weight: bold; padding: 4px; border-radius: 5px;" placeholder="đến giá">
+                            <button onclick="location.href='/Products/SearchPrice?from_price='+document.getElementById('from_price').value+'&to_price='+document.getElementById('to_price').value;" class="filter-submit" style="border: 1px solid #00BFFF; padding: 4px 10px; border-radius: 5px; font-weight: bold;">Lọc</button>
+                        </div>
+                    </div><!-- Price-->
+
+                    <div class="widget mercado-widget filter-widget brand-widget">
+                        <h2 class="widget-title">Phân loại</h2>
+                        <div class="widget-content">
+                            <ul class="list-style vertical-list list-limited" data-show="6">
+                                @{
+                                    int tag_id = 0;
+                                    string tag_selected = "";
+                                    if (ViewBag.tag_id != null)
+                                    {
+                                        tag_id = ViewBag.tag_id;
+
+                                    }
+
+                                    List<ItemTags> list_tags = GetTags();
+                                }
+
+                                @foreach (var item in list_tags)
+                                {
+                                    if (tag_id == item.Id)
+                                    {
+                                        tag_selected = "actived";
+                                    }
+                                    <li class="list-item"><a class="filter-link @tag_selected" href="/Products/Tag/@item.Id">@item.Name</a></li>
+                                }
+
+                            </ul>
+                        </div>
+                    </div><!-- brand widget-->
+
+
+                    <div class="widget-banner" style="margin-bottom: 25px;">
+                        <figure><img src="~/Frontend/img/laptop_1.jpg" width="270" height="331" alt="" style="border-radius: 10px;"></figure>
+                    </div>
+
+                    <div class="widget mercado-widget widget-product">
+                        <h2 class="widget-title">Sản phẩm phổ biến</h2>
+                        <div class="widget-content">
+                            <ul class="products">
+                                <li class="product-item">
+                                    <div class="product product-widget-style">
+                                        <div class="thumbnnail">
+                                            <a href="#" title="Đồng hồ định vị Smart Hero 5G">
+                                                <figure><img src="~/Frontend/img/phukien_5.jpg" alt=""></figure>
+                                            </a>
+                                        </div>
+                                        <div class="product-info">
+                                            <a href="#" class="product-name"><span style="font-size: 14px;">Đồng hồ định vị Smart Hero 5G</span></a>
+                                            <div class="wrap-price"><span class="product-price" style="font-size: 16px;">1.390.000 đ</span></div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="product-item">
+                                    <div class="product product-widget-style">
+                                        <div class="thumbnnail">
+                                            <a href="#" title="Tivi xiaomi TV P1 55 (L55M6-6ARG)">
+                                                <figure><img src="~/Frontend/img/giadung_2.jpg" alt=""></figure>
+                                            </a>
+                                        </div>
+                                        <div class="product-info">
+                                            <a href="#" class="product-name"><span style="font-size: 14px;">Tivi xiaomi TV P1 55" (L55M6-6ARG)</span></a>
+                                            <div class="wrap-price"><span class="product-price" style="font-size: 16px;">7.890.000 đ</span></div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="product-item">
+                                    <div class="product product-widget-style">
+                                        <div class="thumbnnail">
+                                            <a href="#" title="Samsung Galaxy Tab S8 5G">
+                                                <figure><img src="~/Frontend/img/tablet_5.jpg" alt=""></figure>
+                                            </a>
+                                        </div>
+                                        <div class="product-info">
+                                            <a href="#" class="product-name"><span style="font-size: 14px;">Samsung Galaxy Tab S8 5G</span></a>
+                                            <div class="wrap-price"><span class="product-price" style="font-size: 16px;">18.490.000 đ</span></div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="product-item">
+                                    <div class="product product-widget-style">
+                                        <div class="thumbnnail">
+                                            <a href="#" title="MTXT Dell Inspiron 3520 N5I5122W1 Core i5 1235U/ 8GB/ 256GB SSD">
+                                                <figure><img src="~/Frontend/img/laptop_7.jpg" alt=""></figure>
+                                            </a>
+                                        </div>
+                                        <div class="product-info">
+                                            <a href="#" class="product-name"><span style="font-size: 14px;">MTXT Dell Inspiron 3520 N5I5122W1 Core i5 1235U/ 8GB/ 256GB SSD</span></a>
+                                            <div class="wrap-price"><span class="product-price" style="font-size: 16px;">4.590.000 đ</span></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!-- brand widget-->
+
+                    <div class="widget-banner" style="margin-bottom: 25px;">
+                        <figure><img src="~/Frontend/img/giadung_12.jpg" width="270" height="331" alt="" style="border-radius: 10px;"></figure>
+                    </div>
+
+                </div><!--end sitebar-->
+
+            </div><!--end row-->
+
+        </div><!--end container-->
+
+    </main>
+    <!--main area-->
+    <footer>
+        <!-- Thông tin liên hệ -->
+        <div class="footer_info">
+            <div class="container">
+                <div class="footer_top">
+                    <div class="footer_contact">
+                        <ul>
+                            <h4>Tư vấn và đặt hàng</h4>
+                            <li>
+                                <a href="">
+                                    Phương thức thanh toán
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    Hướng dẫn đặt hàng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    Góp ý, khiếu nại
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4>Chính sách</h4>
+                            <li>
+                                <a href="">
+                                    Chính sách bảo hành
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    Chính sách đổi trả
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    Chính sách giao hàng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    Chính sách khui hộp
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    Chính sách bảo mật
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4>Tra cứu thông tin</h4>
+                            <li>
+                                <a href="">
+                                    Tra cứu hóa đơn điện tử
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    Tra cứu ưu đãi của bạn
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    Trung tâm bảo hành
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4>Tổng đài hỗ trợ (8h00 - 22h00)</h4>
+                            <li>
+                                Tư vấn bán hàng:
+                                <a href="" class="phone_contact">1800 8123</a>
+                                (Miễn phí)
+                            </li>
+                            <li>
+                                CSKH & bảo hành:
+                                <a href="" class="phone_contact">1900 8096</a>
+                            </li>
+                            <li>
+                                Tư vấn bán hàng Danh nghiệp:
+                                <a href="" class="phone_contact">024665999666</a>
+                            </li>
+                            <li>
+                                Khảo sát mua hàng tại Viettel Store
+                            </li>
+                            <li>
+                                <div>
+                                    <a href="" class="img_contact">
+                                        <img src="~/Frontend/img/bocongthuong.png" alt="">
+                                    </a>
+                                    <a href="" class="img_contact">
+                                        <img src="~/Frontend/img/viettel_money.png" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="" class="img_contact">
+                                    <img src="~/Frontend/img/boquocphong.png" alt="">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <h4>Bản đồ</h4>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0511206899405!2d105.78047824850344!3d21.030640441681314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab4c7d5152a7%3A0xa6fd0e9a5a068a5f!2zVmnhu4d0IMOBIFRvd2Vy!5e0!3m2!1svi!2s!4v1690125380799!5m2!1svi!2s"
+                                width="265" height="265" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="footer_bottom">
+                    <div>
+                        © 2018 Công ty TNHH Nhà nước một thành viên Thương mại và Xuất khẩu Viettel. Đăng ký doanh nghiệp số 0104831030, do Sở Kế hoạch và Đầu tư Hà Nội cấp lần đầu ngày 25/01/2006,
+                        thay đổi lần thứ 38 ngày 01/07/2019. Địa chỉ: Số 01, phố Giang Văn Minh, phường Kim Mã, quận Ba Đình, thành phố Hà Nội. Chịu trách nhiệm nội dung: Lê Anh Tuấn
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tư vấn khách hàng -->
+        <div class="contect_phone" style="width: 240px;">
+            <a href="#">
+                <i class="fa-solid fa-square-phone"></i>
+                Tư vấn khách hàng <b>1800 8123</b>
+            </a>
+        </div>
+
+        <!-- Scroll top -->
+        <div class="scroll_top" style="bottom: 85px;">
+            <a href="#top">
+                <i class="fa-solid fa-chevron-up"></i>
+                <p>Lên đầu</p>
+            </a>
+        </div>
+    </footer>
+
+    <script src="~/Frontend/slick/jquery-3.7.0.min.js"></script>
+    <script src="~/Frontend/slick/slick.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.banner').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev-banner"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next-banner"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 1,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.slide_img_top, .slide_right_top, .slide_right_botton').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev custom-prev-1"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next custom-next-1"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 1,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.slide_info_botton').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev custom-prev-2"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next custom-next-2"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 4,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.content_banner_2').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev custom-prev-2"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next custom-next-2"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 2,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.info_products').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 5,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+        });
+    </script>
+    <script src="~/Frontend/js/trangchu.js"></script>
+    <script src="~/Frontend/js/jquery-ui-1.12.4.minb8ff.js?ver=1.12.4"></script>
+    <script src="~/Frontend/js/bootstrap.min.js"></script>
+    <script src="~/Frontend/js/chosen.jquery.min.js"></script>
+    <script src="~/Frontend/js/owl.carousel.min.js"></script>
+    <script src="~/Frontend/js/jquery.countdown.min.js"></script>
+    <script src="~/Frontend/js/jquery.sticky.js"></script>
+    <script src="~/Frontend/js/functions.js"></script>
+</body>
+
+</html>

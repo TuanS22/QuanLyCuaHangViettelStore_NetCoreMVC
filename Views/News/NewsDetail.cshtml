@@ -1,0 +1,64 @@
+﻿@{
+	Layout = "~/Views/Shared/LayoutHome.cshtml";
+}
+
+@using TTTN_ViettelStore.Models
+
+<div class="wrap-product-detail container">
+	<div class="advance-info">
+		<div class="tab-control normal" style="padding: 25px 0 15px 0; display: flex; flex-direction: column;">
+			<div>
+                <a href="#description" class="tab-control-item active" style="text-decoration: none; font-size: 20px; color: white; background: #00BFFF; padding: 5px 10px 5px 0; font-weight: bold; border-radius: 5px; cursor: context-menu;">
+                    Bản tin ngày @Html.Raw(Model.Timestamp.ToString("dd/MM/yyyy"))
+                </a>
+            </div>
+			<div style="margin-top: 20px;">
+                <p style="color: red; font-size: 14px; font-weight: bold; font-family: sans-serif;">
+                    Nghe bài đọc dưới đây! 
+                    <img src="https://cdn.glitch.global/aa490c08-b7ef-4856-8b27-93dd8c66c2b8/arrow.png?v=1714663112169" width="25px" height="25px" />
+                </p>
+                <audio style="border: 1px solid #00BFFF; border-radius: 8px; margin-top: 10px;" id="audio" controls></audio>
+            </div>
+		</div>
+
+		<div class="tab-contents">
+			<div class="tab-content-item active" id="des" style="text-align: justify; color: black;">
+                <div id="post_content">
+					<h2 id="title" style="font-size: 3em; line-height: 1.2; font-weight: bold; margin-top: 0px; margin-bottom: 15px; color: black;">
+						@Html.Raw(Model.Name)
+					</h2>
+                    <p>@Html.Raw(Model.Content)</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const title = document.getElementById("title");
+        const post = document.getElementById("post_content");
+        const audio = document.getElementById("audio");
+
+        getAudio(post.innerText);
+
+        async function getAudio(content) {
+            const url = 'https://api.fpt.ai/hmi/tts/v5';
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    'api-key': 'LgtyuBjsNyMrkN0LvajJJ4AyM2E91Mx9',
+                    'speed': '1',
+                    'voice': 'thuminh'
+                },
+
+                body: content,
+            });
+
+            const data = await response.json()
+            audio.src = data.async;
+            console.log(data);
+        }
+    })
+</script>

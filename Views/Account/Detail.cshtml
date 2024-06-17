@@ -1,0 +1,193 @@
+﻿@{
+    //load file Layout.cshtml vao day
+    Layout = "~/Views/Shared/LayoutHome.cshtml";
+}
+@using TTTN_ViettelStore.Models
+@using System.IO
+@using System.Globalization
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+    public ItemUsers GetCustomers(int _CustomerId)
+    {
+        //lay mot ban ghi
+        ItemUsers record = db.Users.Where(item => item.Id == _CustomerId).FirstOrDefault();
+        return record != null ? record : new ItemUsers();
+    }
+    public ItemOrders GetOrders(int _OrderId)
+    {
+        //lay mot ban ghi
+        ItemOrders record = db.Orders.Where(item => item.Id == _OrderId).FirstOrDefault();
+        return record != null ? record : new ItemOrders();
+    }
+    public ItemProducts GetProducts(int _ProductId)
+    {
+        //lay mot ban ghi
+        ItemProducts record = db.Products.Where(item => item.Id == _ProductId).FirstOrDefault();
+        return record != null ? record : new ItemProducts();
+    }
+
+}
+
+<div class="w-1170">
+    <div>
+        <h2>Chi tiết đơn hàng</h2>
+    </div>
+            @{
+                ItemOrders recordOrders = GetOrders(ViewBag.OrderId);
+            }
+
+                @foreach(var item in Model)
+                {
+                    ItemProducts recordProducts = GetProducts(item.ProductId);
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="photo-order" rowspan="4">
+                                    @if (recordProducts.Photo != null && File.Exists(Directory.GetCurrentDirectory() + "/wwwroot/Upload/Products/" + recordProducts.Photo))
+                                    {
+                                        <a href="/Products/Detail/@item.ProductId">
+                                            <img src="~/Upload/Products/@recordProducts.Photo" title="@recordProducts.Name" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" />
+                                        </a>
+                                    }
+                                </td>
+                                <td>
+                                    <a href="#" class="name-order">
+                                        <p><span>Tên sản phẩm: </span> <span>@recordProducts.Name</span></p>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="name-order">
+                                    <p>
+                                        <span>Giá:
+                                            <span style="color: #ee0033;">
+                                                @{
+                                                    decimal discountedPrice = Convert.ToInt32(recordProducts.Price);
+                                                    string formatedDiscountedPrice = discountedPrice.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                                                }
+                                                @formatedDiscountedPrice
+                                            </span>                                                                                                                             
+                                        </span>
+                                        
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p style="font-size: 18px;"><span>Số lượng: </span> <span style="font-weight: normal;">@item.Quantity</span></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @if (recordOrders.Status == 0)
+                                    {
+                                        <a href="/Account/Cancel/@ViewBag.OrderId" class="cancel-order">
+                                            <p><img width="25px" height="25px" src="https://cdn.glitch.global/da364300-2199-4a70-99ed-b08e91551569/delete.png?v=1714063971232" alt="#"> Hủy đơn hàng</p>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .w-1170 {
+        width: 1170px;
+        margin: auto;
+    }
+
+        .w-1170 div h2 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 22px;
+            font-family: sans-serif;
+            margin: 30px 0;
+            margin: 5px;
+            padding: 30px 0 10px 0;
+        }
+
+    p {
+        margin: 10px;
+    }
+
+    table {
+        width: 60%;
+        height: 100%;
+        margin: auto;
+        padding-bottom: 10px;
+        border-bottom: 1px solid gray;
+    }
+
+    figure {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 10px;
+        margin: 0;
+    }
+
+        figure img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: .3s;
+            filter: grayscale(0);
+            border-radius: 10px;
+        }
+
+            figure img:hover {
+                filter: grayscale(0.4);
+                transform: scale(1.1);
+            }
+
+    .photo-order {
+        width: 30%;
+        padding-right: 20px;
+    }
+
+    .name-order {
+        text-decoration: none;
+        color: black;
+    }
+
+        .name-order p {
+            font-size: 18px;
+            font-weight: bold;
+            font-family: sans-serif;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+            .name-order p span:first-child {
+                text-transform: uppercase;
+            }
+
+    .cancel-order {
+        text-decoration: none;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+        .cancel-order p {
+            width: 40%;
+            background: #00BFFF;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+            font-family: sans-serif;
+            transition: .3s;
+        }
+
+            .cancel-order p:hover {
+                box-shadow: 4px 6px 4px #6bdaff;
+            }
+</style>

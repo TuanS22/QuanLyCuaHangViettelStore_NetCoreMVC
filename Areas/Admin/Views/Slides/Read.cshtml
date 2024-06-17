@@ -1,0 +1,158 @@
+﻿@using TTTN_ViettelStore.Models;
+@*Sử dụng X.Page để phân trang*@
+@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<ItemSlides>;
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/Index.cshtml";
+}
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+}
+
+<section class="py-1 bg-blueGray-50">
+    <div class="w-full xl:w-10/12 mb-12 xl:mb-0 px-4 mx-auto mt-4">
+        <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded h-auto">
+            <div class="rounded-t mb-0 px-4 py-3 border-0">
+                <div class="flex flex-wrap items-center">
+                    <div class="relative flex w-full px-4 max-w-full flex-grow flex-1">
+                        <div>
+                            <h1 class="font-bold text-3xl text-black">
+                                Danh sách slides
+                            </h1>
+                        </div>
+                    </div>
+                    <div>
+                        @*Thông báo thành công*@
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div style="width: 300px; text-align: center; border-radius: 5px; border: 1px solid yellow;" id="successMessage" class="alert-success">
+                                @TempData["SuccessMessage"]
+                            </div>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    setTimeout(function () {
+                                        var successMessage = document.getElementById("successMessage");
+                                        if (successMessage) {
+                                            successMessage.style.transition = "opacity 1s";
+                                            successMessage.style.opacity = "0";
+                                            setTimeout(function () {
+                                                successMessage.style.display = "none";
+                                            }, 2000);
+                                        }
+                                    }, 3000);
+                                });
+                            </script>
+                        }
+
+                        @*Thông báo lỗi *@
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div style="width: 300px; text-align: center; border-radius: 5px; border: 1px solid red;" id="errorMessage" class="alert-danger">
+                                @TempData["ErrorMessage"]
+                            </div>
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    console.log("Script executed!");
+                                    setTimeout(function () {
+                                        var errorMessage = document.getElementById("errorMessage");
+                                        if (errorMessage) {
+                                            errorMessage.style.transition = "opacity 1s";
+                                            errorMessage.style.opacity = "0";
+                                            setTimeout(function () {
+                                                errorMessage.style.display = "none";
+                                            }, 2000);
+                                        }
+                                    }, 3000);
+                                });
+                            </script>
+                        }
+                    </div>
+
+                    <div class="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+                        <a href="/Admin/Slides/Create" class="bg-blue-600 rounded-md p-2 text-white hover:bg-blue-800">
+                            <i class="bi bi-person-fill-add"></i> Tạo mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block w-full overflow-x-auto scrollbar_hidden">
+                <table class="items-center bg-transparent w-full border-collapse">
+                    <thead class="on_top">
+                        <tr class="bg-gray-200">
+                            <th class="w-44 px-6 bg-blueGray-50 text-black align-middle border border-solid border-blueGray-100 py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                Photo
+                            </th>
+                            <th class="px-6 bg-blueGray-50 text-black align-middle border border-solid border-blueGray-100 py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                Name
+                            </th>
+                            <th class="w-52 px-6 bg-blueGray-50 text-black align-middle border border-solid border-blueGray-100 py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left w-32">
+                                Title
+                            </th>
+                            <th class="px-6 bg-blueGray-50 text-black align-middle border border-solid border-blueGray-100 py-3 text-sm uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left w-32">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="padding: 20px;">
+                                    @if (!String.IsNullOrEmpty(item.Photo))
+                                    {
+                                        <img src="~/Upload/Slides/@item.Photo" style="width:100px; height:auto; border-radius: 10px;">
+                                    }
+                                </td>
+                                <td style="padding: 20px; font-weight: 600; color: black;">@item.Name</td>
+                                <td style="padding: 20px;">@item.Title</td>
+                                <td style="text-align:center;">
+                                    <a href="/Admin/Slides/Update/@item.Id">
+                                        <i class="mdi mdi-pencil mdi-24px" style="color: blue;"></i>
+                                    </a>&nbsp;
+                                    <a href="/Admin/Slides/Delete/@item.Id" onclick="return window.confirm('Bạn có chắc chắn xóa slide?');">
+                                        <i class="mdi mdi-delete mdi-24px" style="color: red; margin-left: 10px;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <style type="text/css">
+                    .block {
+                        position: relative; /* Đảm bảo position relative cho .block */
+                    }
+
+                    .on_top {
+                        position: sticky;
+                        top: -1px;
+                        background-color: white; /* Màu nền của thead */
+                        z-index: 2; /* Đảm bảo nằm trên các phần tử khác khi cuộn */
+                    }
+
+                    .pagination li {
+                        border-radius: 10px;
+                        margin-right: 20px;
+                        border: 2px solid white;
+                    }
+
+                        .pagination li a,
+                        .pagination li span {
+                            padding: 5px 10px;
+                        }
+
+                    ::-webkit-scrollbar {
+                        width: 0;
+                    }
+                </style>
+
+            </div>
+        </div>
+        @*Phân trang*@
+        @Html.PagedListPager(Model, page => Url.Action("Read", new { page = page, a = 1, b = 2 }))
+    </div>
+</section>

@@ -1,0 +1,560 @@
+﻿@using TTTN_ViettelStore.Models
+@using System.Globalization 
+@*thư viện format sang tiền vnđ*@
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    // lay ten danh muc san pham -> join 3 bang voi nhau
+    public string GetCategoryName(int _ProductId)
+    {
+        var record = (from category in db.Categories
+                      join category_product in db.CategoriesProduct on category.Id equals category_product.CategoryId
+                      join product in db.Products on category_product.ProductId equals product.Id
+                      where category_product.ProductId == _ProductId
+                      select new { category.Name }).FirstOrDefault();
+        /*
+        * select category => lấy tất cả các cột của table Categories
+        * select new {category.Name} => chỉ lấy cột Name của table Categories
+        */
+        if (record != null)
+        {
+            return record.Name;
+        }
+        return "";
+    }
+
+    // lấy số sao để hiện thị
+    public int GetStar(int _ProductId, int _Star)
+    {
+        var record = db.Rating.Where(item => item.ProductId == _ProductId && item.Star == _Star).ToList();
+        if (record != null)
+        {
+            return record.Count;
+        }
+        return 0;
+    }
+
+    // hiển thị 8 sản phẩm
+    public List<ItemProducts> GetDiscountProducts()
+    {
+        List<ItemProducts> list_record = db.Products.Where(item => item.Discount > 0).OrderByDescending(item => item.Id).Take(8).ToList();
+        return list_record;
+    }
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>@Model.Name | Giá tốt nhất thị trường</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href="~/Frontend/css/iPhone14Pro.css">
+    <link rel="stylesheet" href="~/Frontend/slick/slick.css">
+    <link rel="stylesheet" href="~/Frontend/css/slick_custom.css">
+    <link rel="stylesheet" href="~/Frontend/css/nav_footer.css">
+    <link rel="stylesheet" href="~/Frontend/font awesome/fontawesome-free-6.4.0-web/css/all.min.css">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Frontend/img/Logo_Viettel Store.png">
+</head>
+<body>
+    @*import file Header.cshtml vào đây*@
+    @Html.Partial("~/Views/Shared/Header.cshtml")
+    <main>
+        <!-- Thông tin sản phẩm -->
+        <div class="container" style="padding: 20px 0; border-top: 1px solid #00BFFF;">
+            <span class="text1">
+                <a href="">
+                    <i class="fa-solid fa-house"></i>
+                    Thông tin sản phẩm
+                </a>
+                <a href="#" class="text1_1">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </span>
+            <span class="text2">
+                @Model.Name
+            </span>
+        </div>
+
+        <!-- Thông tin và lựa chọn cấu hình sản phẩm -->
+        <div class="content container disflex">
+            <div class="content_left">
+                <h1>@Model.Name</h1>
+                <div class="price_product">
+                    <div class="price_info">
+                        <span>
+                            @{
+                                decimal discountedPrice = Convert.ToInt32(Model.Price - (Model.Price * Model.Discount) / 100);
+                                string formatedDiscountedPrice = discountedPrice.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                            }
+                            @formatedDiscountedPrice
+                        </span>
+                        <span class="price_old">Sale <b style="color: brown; ">@Model.Discount%</b></span>
+                        <p>Bán chạy</p>
+                    </div>
+                    <div class="vat">
+                        <span>Đã bao gồm thuế VAT</span>
+                    </div>
+                </div>
+                <div class="compare">
+                    <div class="compare_left">
+                        <a href="#">
+                            <i class="fa-solid fa-arrow-right-arrow-left fa-rotate-90"></i>
+                            <span>So sánh sản phẩm</span>
+                        </a>
+                    </div>
+                    <div class="compare_right">
+                        <a href="#">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Tìm địa chỉ cửa hàng có hàng gần nhất </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="list_img_product">
+                    <img src="~/Upload/Products/@Model.Photo" alt="@Model.Name" width="480px">
+                    <img src="~/Upload/Products/@Model.Photo" alt="@Model.Name" width="480px">
+                </div>
+                <div class="list_info_product">
+                    <ul>
+                        <li class="list_info">
+                            <span>
+                                <i class="fa-solid fa-shield-halved"></i>
+                                Bảo hành chính hãng 12 tháng.
+                            </span>
+                            <a href="#">Xem điểm bảo hành</a>
+                        </li>
+                        <li class="list_info">
+                            <span>
+                                <i class="fa-solid fa-shield-halved"></i>
+                                1 đổi 1 trong vòng 60 ngày.
+                            </span>
+                            <a href="#">Tìm hiểu</a>
+                        </li>
+                        <li class="list_info">
+                            <span>
+                                <i class="fa-solid fa-truck-fast"></i>
+                                Giao hàng miễn phí 10km.
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin: 15px 0 0 0;">Đánh giá sản phẩm </h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <div style="clear: both;"></div>
+                    <div class="product-rating">
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <a href="#" class="count-review">(@GetStar(Model.Id, 1))</a>
+                    </div>
+                    <div style="clear: both;"></div>
+                    <div class="product-rating">
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <a href="#" class="count-review">(@GetStar(Model.Id, 2))</a>
+                    </div>
+                    <div style="clear: both;"></div>
+                    <div class="product-rating">
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <a href="#" class="count-review">(@GetStar(Model.Id, 3))</a>
+                    </div>
+                    <div style="clear: both;"></div>
+                    <div class="product-rating">
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <a href="#" class="count-review">(@GetStar(Model.Id, 4))</a>
+                    </div>
+                    <div style="clear: both;"></div>
+                    <div class="product-rating">
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <i class="fa fa-star" aria-hidden="true" style="color:#efce4a;"></i>
+                        <a href="#" class="count-review">(@GetStar(Model.Id, 5))</a>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+
+            <div class="content_right">
+                <!-- Mua kèm gói cước -->
+                <div class="form_info">
+                    <div class="form_info_1">
+                        <div>
+                            Mua kèm gói cước chỉ từ
+                            <span>
+                                @{
+                                    decimal discountedPrice1 = Convert.ToInt32((Model.Price - (Model.Price * Model.Discount) / 100) + 1200000);
+                                    string formatedDiscountedPrice1 = discountedPrice1.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                                }
+                                @formatedDiscountedPrice1
+                            </span>
+                        </div>
+                        <div class="view_info">
+                            <a href="#">
+                                Xem chi tiết
+                                <i class="fa-solid fa-angle-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="form_info_2">
+                        <ul>
+                            <a href="#" class="info_data">
+                            <li>Mua kèm gói cước</li>
+                            </a>
+                            <a href="#" class="info_data">
+                            <li>Hòa mạng sim mới</li>
+                            </a>
+                        </ul>
+                    </div>
+                    <div class="form_info_3">
+                        Số điện thoại
+                    </div>
+                    <div class="form_info_4">
+                        <input type="text" placeholder="Nhập số điện thoại của bạn">
+                        <input type="submit" value="Xem gói cước">
+                    </div>
+                    <div class="form_info_5">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Vui lòng nhập số điện thoại của bạn. Gói cước ưu đãi sẽ được áp dụng trên các số điện thoại khác nhau.
+                    </div>
+                </div>
+
+                <!-- Khuyến mãi -->
+                <div class="form_info form_promotion">
+                    <div class="promotion">
+                        <div>
+                            <h4>Khuyến mãi</h4>
+                        </div>
+                        <div>
+                            <p>Giá và khuyến mãi áp dụng đặt và nhập hàng từ 2/7 - 31/7</p>
+                        </div>
+                    </div>
+                    <div class="frame_info_promotion">
+                        <div class="info_promotion">
+                            <p>THANH TOÁN/TRẢ GÓP (Khách hàng chọn 01 trong các hình thức trả góp/thanh toán sau):</p>
+                            <i class="fa-regular fa-star"></i>
+                            Trả góp 0% qua công ty tài chính (Áp dụng trên giá bán lẻ) <br>
+                            <i class="fa-regular fa-star"></i>
+                            Trả góp kỳ hạn 06-12 tháng qua thẻ tín dụng (áp dụng trên giá khuyến mại) <br>
+                            <p>ƯU DÃI MUA KÈM:</p>
+                            <i class="fa-regular fa-star"></i>
+                            Giảm thêm 3,000,000đ cho khách hàng nâng cấp lên gói trả sau V1000S
+                            (hoặc trợ giá tương đương 3 tháng cước cho các gói V120D, V150K, V300S, V500S, V700S hoặc trợ giá tương đương 6 tháng cước cho gói V120M, V150M, V300E)
+                            (Áp dụng trả góp qua Công ty Tài chính), chi tiết <a href="">Tại đây</a> <br>
+                            <i class="fa-regular fa-star"></i>
+                            Thu cũ giá cao lên đến 20,000,000đ khi lên đời iPhone 14 Series <br>
+                            <i class="fa-regular fa-star"></i>
+                            Miễn phí 03 tháng dùng thử gói iCloud+ 50GB, chi tiết <a href="">Tại đây</a> <br>
+                            <i class="fa-regular fa-star"></i>
+                            Một đổi một trong vòng 60 ngày nếu lỗi do nhà sản xuất (Áp dụng với Điện thoại (Samsung, iPhone);
+                            Máy tính bảng (Samsung, iPad); Đồng hồ thông minh (Apple Watch)) <br>
+                            <i class="fa-regular fa-star"></i>
+                            Giảm giá 50% Sim số đẹp (không quá 200.000đ) (chỉ với Điện thoại) <br>
+                            <i class="fa-regular fa-star"></i>
+                            Ưu đãi đến 35% phí bảo hiểm Thiết bị di động, chỉ từ 165.000đ <br>
+                            <i class="fa-regular fa-star"></i>
+                            Ưu đãi bảo hiểm mở rộng: Chỉ từ 500đ/ngày thời gian bảo hành lên đến 24 tháng <br>
+                            <i class="fa-regular fa-star"></i>
+                            Giảm 10% cho khách hàng khi mua máy và sử dụng dịch vụ tại siêu thị áp dụng mua Gia dụng nhóm: Nồi chiên không dầu, Nồi áp suất điện tử và Nồi cơm điện tử <br>
+                        </div>
+                    </div>
+                    <div class="view_more">
+                        <a href="#">
+                            Đọc thêm
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Ưu đãi -->
+                <div class="form_info">
+                    <div class="form_info_1">
+                        <p>Ưu đãi theo sản phẩm</p>
+                    </div>
+                    <div class="form_info_6">
+                        <p>Hộp, Sách hướng dẫn, Cây lấy sim, Cáp Lighting</p>
+                        <i class="fa-regular fa-star"></i>
+                        Type C
+                    </div>
+                </div>
+
+                <!-- Giỏ hàng -->
+                <div class="form_shop_pay">
+                    <a href="/WishList/Add/@Model.Id" class="pay">
+                        <span><i class="fa fa-heart"></i> YÊU THÍCH</span>
+                        <p>Xem hàng tại nhà, thoải mái lựa chọn</p>
+                    </a>
+                    <a href="/Cart/Buy/@Model.Id" class="cart pay">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        <p>Thêm vào giỏ hàng</p>
+                    </a>
+                </div>
+
+                <!-- Thanh toán -->
+                <div class="form_shop_pay">
+                    <a href="#" class="pay pay_cart">
+                        <span>TRẢ GÓP 0%</span>
+                        <p>Thủ tục đơn giản</p>
+                    </a>
+                    <a href="#" class="pay pay_cart">
+                        <span>TRẢ GÓP QUA THẺ</span>
+                        <p>VISA, Master Card, JBC</p>
+                    </a>
+                </div>
+
+                <!-- Thông tin liên hệ -->
+                <div class="contact_content_right mt_20">
+                    <div>
+                        <i class="fa-solid fa-phone"></i>
+                        Gọi
+                        <a href="#">1800 8123</a>
+                        tư vấn mua hàng (Miễn phí)
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-phone"></i>
+                        Nhận thông tin khuyến mãi sản phẩm
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sản phẩm trong tầm giá -->
+        <!-- Điện thoại bán chạy  -->
+        <div class="products container">
+            <div class="products_title">
+                <div class="title">Sản phẩm bán chạy</div>
+                <div class="view_all">
+                    <a href="#">
+                        Xem tất cả
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="info_products">
+                @{
+                    List<ItemProducts> list_discount_products = GetDiscountProducts();
+                }
+
+                @foreach (var item in list_discount_products)
+                {
+                    <!-- Start -->
+                    <div class="products_info">
+                        <a href="~/Products/Detail/@item.Id" class="product_img">
+                            <div class="product_sale">
+                                <div>Giảm</div>
+                                <div>@item.Discount%</div>
+                            </div>
+                            <div class="img_info">
+                                <img src="~/Upload/Products/@item.Photo" alt="Hình ảnh đang được xử lý." width="100%" height="165px">
+                            </div>
+                            <div class="product_info">
+                                <div class="product_name">
+                                    <h3>@item.Name</h3>
+                                </div>
+                                <div class="product_price">
+                                    <div class="price_new">
+                                        @{
+                                            decimal discountedPrice2 = Convert.ToInt32(item.Price - (item.Price * item.Discount) / 100);
+                                            string formatedDiscountedPrice2 = discountedPrice2.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                                        }
+                                        @formatedDiscountedPrice2
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="info_text">
+                            @Html.Raw(item.Description)
+                        </div>
+                    </div>
+                    <!-- End -->
+                }
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Thông tin liên hệ -->
+        <div class="footer_info">
+            <div class="container">
+                <div class="footer_top">
+                    <div class="footer_contact">
+                        <ul>
+                            <h4>Tư vấn và đặt hàng</h4>
+                            <li>
+                                <a href="#">
+                                    Phương thức thanh toán
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Hướng dẫn đặt hàng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Góp ý, khiếu nại
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4>Chính sách</h4>
+                            <li>
+                                <a href="#">
+                                    Chính sách bảo hành
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Chính sách đổi trả
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Chính sách giao hàng
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Chính sách khui hộp
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Chính sách bảo mật
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4>Tra cứu thông tin</h4>
+                            <li>
+                                <a href="#">
+                                    Tra cứu hóa đơn điện tử
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Tra cứu ưu đãi của bạn
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Trung tâm bảo hành
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <ul>
+                            <h4>Tổng đài hỗ trợ (8h00 - 22h00)</h4>
+                            <li>
+                                Tư vấn bán hàng:
+                                <a href="#" class="phone_contact">1800 8123</a>
+                                (Miễn phí)
+                            </li>
+                            <li>
+                                CSKH & bảo hành:
+                                <a href="#" class="phone_contact">1900 8096</a>
+                            </li>
+                            <li>
+                                Tư vấn bán hàng Danh nghiệp:
+                                <a href="#" class="phone_contact">024665999666</a>
+                            </li>
+                            <li>
+                                Khảo sát mua hàng tại Viettel Store
+                            </li>
+                            <li>
+                                <div>
+                                    <a href="#" class="img_contact">
+                                        <img src="~/Frontend/img/bocongthuong.png" alt="">
+                                    </a>
+                                    <a href="#" class="img_contact">
+                                        <img src="~/Frontend/img/viettel_money.png" alt="">
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="#" class="img_contact">
+                                    <img src="~/Frontend/img/boquocphong.png" alt="">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer_contact">
+                        <h4>Bản đồ</h4>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0511206899405!2d105.78047824850344!3d21.030640441681314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab4c7d5152a7%3A0xa6fd0e9a5a068a5f!2zVmnhu4d0IMOBIFRvd2Vy!5e0!3m2!1svi!2s!4v1690125380799!5m2!1svi!2s"
+                                width="265" height="265" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="footer_bottom">
+                    <div>
+                        © 2018 Công ty TNHH Nhà nước một thành viên Thương mại và Xuất khẩu Vittel. Đăng ký doanh nghiệp số 0104831030, do Sở Kế hoạch và Đầu tư Hà Nội cấp lần đầu ngày 25/01/2006,
+                        thay đổi lần thứ 38 ngày 01/07/2019. Địa chỉ: Số 01, phố Giang Văn Minh, phường Kim Mã, quận Ba Đình, thành phố Hà Nội. Chịu trách nhiệm nội dung: Lê Anh Tuấn
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tư vấn bán hàng -->
+        <div class="contect_phone">
+            <a href="#">
+                <i class="fa-solid fa-square-phone"></i>
+                Tư vấn khách hàng <b>1800 8123</b>
+            </a>
+        </div>
+
+        <!-- Scroll top -->
+        <div class="scroll_top">
+            <a href="#top">
+                <i class="fa-solid fa-chevron-up"></i>
+                <p>Lên đầu</p>
+            </a>
+        </div>
+    </footer>
+
+    <script src="~/Frontend/slick/jquery-3.7.0.min.js"></script>
+    <script src="~/Frontend/slick/slick.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.banner').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 1,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.list_img_product').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 1,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+
+            $('.info_products').slick({
+                autoplay: true,
+                prevArrow: '<button type="button" class="slick-prev custom-prev"><i class="fa-solid fa-chevron-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-prev custom-next"><i class="fa-solid fa-chevron-right"></i></button>',
+                slidesToShow: 5,
+                speed: 1000,
+                slidesToScroll: 1
+            });
+        });
+    </script>
+</body>
+</html>

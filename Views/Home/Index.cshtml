@@ -1,0 +1,2105 @@
+﻿@using TTTN_ViettelStore.Models
+@using System.Globalization
+
+@{
+    Layout = "~/Views/Shared/LayoutHome.cshtml";
+}
+
+@functions{
+    public MyDbContext db = new MyDbContext();
+
+    // lấy ra 8 bản ghi
+    public List<ItemProducts> GetDiscountProducts()
+    {
+        List<ItemProducts> list_record = db.Products.Where(item => item.Discount > 0).OrderByDescending(item => item.Id).ToList();
+        return list_record;
+    }
+
+    //lấy ra 8 bản ghi
+    public List<ItemProducts> GetHotProducts()
+    {
+        List<ItemProducts> list_record = db.Products.Where(item => item.Hot == 1).OrderByDescending(item => item.Id).Take(8).ToList();
+        return list_record;
+    }
+
+    // các danh mục hiển thị trang chủ(DisplayHomePage = 1)
+    public List<ItemCategories> DisplayHomePageCategories()
+    {
+        List<ItemCategories> list_record = db.Categories.Where(item => item.DisplayHomePage == 1).OrderByDescending(item => item.Id).ToList();
+        return list_record;
+    }
+
+    // lấy 8 sản phẩm thuộc danh mục
+    public List<ItemProducts> GetProducts(int _CategoryId)
+    {
+        // join 3 bảng Categories, CategoriesProducts, Products
+        List<ItemProducts> list_record = (from category in db.Categories
+                                         join category_product in db.CategoriesProduct on category.Id equals category_product.CategoryId
+                                         join product in db.Products on category_product.ProductId equals product.Id
+                                         where category_product.CategoryId == _CategoryId
+                                         select product).Take(8).ToList();
+        return list_record;
+    }
+
+    // tin tức nổi bật - lấy ra 7 bản ghi
+    public List<ItemNews> GetHotNews()
+    {
+        List<ItemNews> list_record = db.News.Where(item => item.Hot == 1 || item.Hot == 0).OrderBy(item => item.Id).Take(7).ToList();
+        return list_record;
+    }
+
+    // lấy danh sách ảnh slideshows
+    public List<ItemSlides> GetSlideShows()
+    {
+        List<ItemSlides> list_record = db.Slides.OrderByDescending(item => item.Id).ToList();
+        return list_record;
+    }
+
+    // lấy số sao để hiện thị
+    public int GetStar(int _ProductId, int _Star)
+    {
+        var record = db.Rating.Where(item => item.ProductId == _ProductId && item.Star == _Star).ToList();
+        if (record != null)
+        {
+            return record.Count;
+        }
+        return 0;
+    }
+
+    //lấy tên danh mục tương ứng với id truyền vào
+    public string GetCategoryName(int CategoryId)
+    {
+        ItemCategories record = db.Categories.Where(item => item.Id == CategoryId).FirstOrDefault();
+        if (record != null)
+        {
+            return record.Name;
+        }
+        return "Cửa hàng";
+    }
+}
+
+<div class="content">
+    <!-- Content banner 1 -->
+    <div class="content_banner_1">
+        <div class="img_banner_top">
+            <a href="#">
+                <img src="~/Frontend/img/iPhone15.png" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div class="img_banner_botton container">
+            <!-- Slide left -->
+            <div class="slide_left">
+                <div class="slide_img_top">
+                    @{
+                        List<ItemSlides> list_slides = GetSlideShows();
+                    }
+                    @foreach (var item in list_slides)
+                    {
+                        <img src="~/Upload/Slides/@item.Photo" alt="Hình ảnh đang được xử lý." width="100%" style="height: 342px; object-fit: cover;">
+                    }
+                </div>
+                <div class="slide_info_botton">
+                    <div>
+                        <a href="#">
+                            <h3>
+                                iPhone 14 Pro Max <br>
+                                Giá chỉ từ 25.990k
+                            </h3>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#">
+                            <h3>
+                                Galaxy S23 Series <br>
+                                Ưu đãi đến 14 triệu
+                            </h3>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#">
+                            <h3>
+                                Redmi Note 12 Series <br>
+                                Giá chỉ từ 4.590.000đ
+                            </h3>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#">
+                            <h3>
+                                Oppo A78 <br>
+                                Giá chỉ 6.990.000đ
+                            </h3>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#">
+                            <h3>
+                                Vivo V27e <br>
+                                Giá chỉ 8.990.000đ
+                            </h3>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#">
+                            <h3>
+                                Realme C55 <br>
+                                Giá chỉ từ 4.990.000đ
+                            </h3>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#">
+                            <h3>
+                                Mua sim số đẹp <br>
+                                Giá chỉ từ 190.000đ
+                            </h3>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#">
+                            <h3>
+                                Sale hè rực rỡ <br>
+                                Giảm tới 50%
+                            </h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide right -->
+            <div class="slide_right">
+                <div class="slide_right_top">
+                    <img src="~/Frontend/img/slide_right_top_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_top_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_top_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_top_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_top_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_top_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_top_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_top_1.jpg" alt="Hình ảnh đang được xử lý.">
+                </div>
+                <div class="slide_right_botton">
+                    <img src="~/Frontend/img/slide_right_botton_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_botton_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_botton_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_botton_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_botton_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_botton_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_botton_1.jpg" alt="Hình ảnh đang được xử lý.">
+                    <img src="~/Frontend/img/slide_right_botton_1.jpg" alt="Hình ảnh đang được xử lý.">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh mục nổi bật (category) -->
+    <div class="content_category container">
+        <div class="title">Danh mục nổi bật</div>
+        <div class="content_category_products">
+            <aside>
+                <h3 class="img_category">
+                    <a href="./html/dienthoai.html">
+                        <span class="icon_img_category">
+                            <img src="~/Frontend/img/category_1.png" alt="Hình ảnh đang được xử lý."
+                                 width="80%" style="box-shadow: 5px 5px 6px -4px lightseagreen;">
+                        </span> <br>
+                        <span>Điện thoại</span>
+                    </a>
+                </h3>
+                <h3 class="img_category">
+                    <a href="./html/laptop.html">
+                        <span class="icon_img_category">
+                            <img src="~/Frontend/img/category_2.png" alt="Hình ảnh đang được xử lý."
+                                 width="80%" style="box-shadow: 5px 5px 6px -4px lightseagreen;">
+                        </span> <br>
+                        <span>Laptop</span>
+                    </a>
+                </h3>
+                <h3 class="img_category">
+                    <a href="./html/tablet.html">
+                        <span class="icon_img_category">
+                            <img src="~/Frontend/img/category_3.png" alt="Hình ảnh đang được xử lý."
+                                 width="80%" style="box-shadow: 5px 5px 6px -4px lightseagreen;">
+                        </span> <br>
+                        <span>Máy tính bảng</span>
+                    </a>
+                </h3>
+                <h3 class="img_category">
+                    <a href="./html/dongho.html">
+                        <span class="icon_img_category">
+                            <img src="~/Frontend/img/category_4.png" alt="Hình ảnh đang được xử lý." 
+                                 width="70%" style="box-shadow: 5px 5px 6px -4px lightseagreen;">
+                        </span> <br>
+                        <span>Đồng hồ thông minh</span>
+                    </a>
+                </h3>
+                <h3 class="img_category">
+                    <a href="./html/phukien.html">
+                        <span class="icon_img_category">
+                            <img src="~/Frontend/img/category_5.png" alt="Hình ảnh đang được xử lý."
+                                 width="80%" style="box-shadow: 5px 5px 6px -4px lightseagreen;">
+                        </span> <br>
+                        <span>Phụ kiện</span>
+                    </a>
+                </h3>
+                <h3 class="img_category">
+                    <a href="./html/giadung.html">
+                        <span class="icon_img_category">
+                            <img src="~/Frontend/img/category_6.png" alt="Hình ảnh đang được xử lý."
+                                 width="80%" style="box-shadow: 5px 5px 6px -4px lightseagreen;">
+                        </span> <br>
+                        <span>Gia dụng</span>
+                    </a>
+                </h3>
+                <h3 class="img_category">
+                    <a href="#">
+                        <span class="icon_img_category">
+                            <img src="~/Frontend/img/category_7.png" alt="Hình ảnh đang được xử lý."
+                                 width="80%" style="box-shadow: 5px 5px 6px -4px lightseagreen;">
+                        </span> <br>
+                        <span>Sim số</span>
+                    </a>
+                </h3>
+                <h3 class="img_category">
+                    <a href="#">
+                        <span class="icon_img_category">
+                            <img src="~/Frontend/img/category_8.png" alt="Hình ảnh đang được xử lý."
+                                 width="80%" style="box-shadow: 5px 5px 6px -4px lightseagreen;">
+                        </span> <br>
+                        <span>Thanh toán tiện ích</span>
+                    </a>
+                </h3>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Content banner 2 -->
+    <div class="content_banner_2 container">
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/content_banner_1.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/content_banner_2.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/content_banner_3.png" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/content_banner_4.png" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/content_banner_1.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/content_banner_5.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/content_banner_6.png" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/content_banner_7.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+    </div>
+
+    <!-- Điện thoại bán chạy  -->
+    <div class="products container">
+        <div class="products_title">
+            <div class="title">Sản phẩm bán chạy</div>
+            <div class="view_all">
+                <a href="#">
+                    Xem tất cả
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="info_products">
+            @{
+                List<ItemProducts> list_discount_products = GetDiscountProducts();
+            }
+
+            @foreach(var item in list_discount_products)
+            {
+                <!-- Start -->
+                <div class="products_info">
+                    <a href="~/Products/Detail/@item.Id" class="product_img">
+                        <div class="product_sale">
+                            <div>Giảm</div>
+                            <div>@item.Discount%</div>
+                        </div>
+                        <div class="img_info">
+                            <img src="~/Upload/Products/@item.Photo" alt="Hình ảnh đang được xử lý." width="100%" height="100%">
+                        </div>
+                        <div class="product_info">
+                            <div class="product_name">
+                                <h3>@item.Name</h3>
+                            </div>
+                            <div class="product_price">
+                                <div class="price_new">
+                                    @{
+                                        decimal discountedPrice = Convert.ToInt32(item.Price - (item.Price * item.Discount) / 100);
+                                        string formatedDiscountedPrice = discountedPrice.ToString("C0", CultureInfo.GetCultureInfo("vi-VN"));
+                                    }
+                                    @formatedDiscountedPrice
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="info_text">
+                        @Html.Raw(item.Description)
+                    </div>
+                </div>
+                <!-- End -->
+            }
+        </div>
+    </div>
+
+    <!-- Mua sim số đẹp -->
+    <div class="sim products container">
+        <div class="products_title">
+            <div class="title">Mua sim số đẹp</div>
+            <div class="view_all">
+                <a href="#">
+                    Xem tất cả
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="sim_product_info">
+            <!-- Start -->
+            <div class="sim_it">
+                <span class="sim_hot">Hot news</span>
+                <div class="it">
+                    <ul>
+                        <li class="sim_left">
+                            <a href="#">
+                                <img src="~/Frontend/img/sim_1.png" alt="Hình ảnh đang được xử lý.">
+                            </a>
+                        </li>
+                        <li class="sim_right">
+                            <div>
+                                <div class="sim_right_top">
+                                    <ul>
+                                        <li>
+                                            <i class="fa-solid fa-right-left"></i> <br>
+                                            <span>30GB Data</span>
+                                        </li>
+                                        <li>
+                                            <i class="fa-solid fa-phone-volume"></i> <br>
+                                            <span>Miễn phí nội mạng</span>
+                                        </li>
+                                        <li>
+                                            <i class="fa-solid fa-phone-volume"></i> <br>
+                                            <span>30 phút ngoại mạng</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="sim_right_botton">
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Miễn phí tháng đầu khi mua kèm sim từ 190k đến 290k</span>
+                                    </strong>
+                                    <br>
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Tặng PMH giảm 50% phụ kiện</span>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div style="position: absolute; bottom: 15px;">
+                                <strong>
+                                    <span class="sim_price">Giá từ: 190.000</span>
+                                </strong>
+                                <strong>
+                                    <button class="sim_button" type="button">Chọn số</button>
+                                </strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="sim_it">
+                <span class="sim_hot">Hot news</span>
+                <div class="it">
+                    <ul>
+                        <li class="sim_left">
+                            <a href="#">
+                                <img src="~/Frontend/img/sim_2.png" alt="Hình ảnh đang được xử lý.">
+                            </a>
+                        </li>
+                        <li class="sim_right">
+                            <div>
+                                <div class="sim_right_top">
+                                    <ul>
+                                        <li>
+                                            <i class="fa-solid fa-right-left"></i> <br>
+                                            <span>45GB Data</span>
+                                        </li>
+                                        <li>
+                                            <i class="fa-solid fa-phone-volume"></i> <br>
+                                            <span>Miễn phí nội mạng</span>
+                                        </li>
+                                        <li>
+                                            <i class="fa-solid fa-phone-volume"></i> <br>
+                                            <span>50 phút ngoại mạng</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="sim_right_botton">
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Miễn phí tháng đầu khi mua kèm sim từ 300k đến 490k</span>
+                                    </strong>
+                                    <br>
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Tặng PMH giảm 50% phụ kiện</span>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div style="position: absolute; bottom: 15px;">
+                                <strong>
+                                    <span class="sim_price">Giá từ: 190.000</span>
+                                </strong>
+                                <strong>
+                                    <button class="sim_button" type="button">Chọn số</button>
+                                </strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="sim_it">
+                <span class="sim_hot">Hot news</span>
+                <div class="it">
+                    <ul>
+                        <li class="sim_left">
+                            <a href="#">
+                                <img src="~/Frontend/img/sim_3.png" alt="Hình ảnh đang được xử lý.">
+                            </a>
+                        </li>
+                        <li class="sim_right">
+                            <div>
+                                <div class="sim_right_top">
+                                    <ul>
+                                        <li>
+                                            <i class="fa-solid fa-right-left"></i> <br>
+                                            <span>60GB Data</span>
+                                        </li>
+                                        <li>
+                                            <i class="fa-solid fa-phone-volume"></i> <br>
+                                            <span>Miễn phí nội mạng</span>
+                                        </li>
+                                        <li>
+                                            <i class="fa-solid fa-phone-volume"></i> <br>
+                                            <span>80 phút ngoại mạng</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="sim_right_botton">
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Miễn phí tháng đầu khi mua kèm sim từ 500k đến 990k</span>
+                                    </strong>
+                                    <br>
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Tặng PMH giảm 50% phụ kiện</span>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div style="position: absolute; bottom: 15px;">
+                                <strong>
+                                    <span class="sim_price">Giá từ: 190.000</span>
+                                </strong>
+                                <strong>
+                                    <button class="sim_button" type="button">Chọn số</button>
+                                </strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="sim_it">
+                <span class="sim_hot">Hot news</span>
+                <div class="it">
+                    <ul>
+                        <li class="sim_left">
+                            <a href="#">
+                                <img src="~/Frontend/img/sim_4.png" alt="Hình ảnh đang được xử lý.">
+                            </a>
+                        </li>
+                        <li class="sim_right">
+                            <div>
+                                <div class="sim_right_top">
+                                    <ul>
+                                        <li>
+                                            <i class="fa-solid fa-right-left"></i> <br>
+                                            <span>90GB Data</span>
+                                        </li>
+                                        <li>
+                                            <i class="fa-solid fa-phone-volume"></i> <br>
+                                            <span>Miễn phí nội mạng</span>
+                                        </li>
+                                        <li>
+                                            <i class="fa-solid fa-phone-volume"></i> <br>
+                                            <span>100 phút ngoại mạng</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="sim_right_botton">
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Miễn phí tháng đầu khi mua kèm sim trên 2 triệu</span>
+                                    </strong>
+                                    <br>
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Tặng PMH giảm 50% phụ kiện</span>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div style="position: absolute; bottom: 15px;">
+                                <strong>
+                                    <span class="sim_price">Giá từ: 190.000</span>
+                                </strong>
+                                <strong>
+                                    <button class="sim_button" type="button">Chọn số</button>
+                                </strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="sim_it">
+                <span class="sim_hot">Hot news</span>
+                <div class="it">
+                    <ul>
+                        <li class="sim_left">
+                            <a href="#">
+                                <img src="~/Frontend/img/sim_5.png" alt="Hình ảnh đang được xử lý.">
+                            </a>
+                        </li>
+                        <li class="sim_right">
+                            <div>
+                                <div class="sim_right_top">
+                                    <ul>
+                                        <li>
+                                            <i class="fa-solid fa-right-left"></i> <br>
+                                            <span>60GB Data/tháng (2GB/ngày)</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="sim_right_botton">
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Miễn phí tháng cước đầu tiên khi mua Sim từ 300k đến 490k</span>
+                                    </strong>
+                                    <br>
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Tặng PMH giảm 50% phụ kiện</span>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div style="position: absolute; bottom: 15px;">
+                                <strong>
+                                    <span class="sim_price">Giá từ: 190.000</span>
+                                </strong>
+                                <strong>
+                                    <button class="sim_button" type="button">Chọn số</button>
+                                </strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="sim_it">
+                <span class="sim_hot">Hot news</span>
+                <div class="it">
+                    <ul>
+                        <li class="sim_left">
+                            <a href="#">
+                                <img src="~/Frontend/img/sim_6.png" alt="Hình ảnh đang được xử lý.">
+                            </a>
+                        </li>
+                        <li class="sim_right">
+                            <div>
+                                <div class="sim_right_top">
+                                    <ul>
+                                        <li>
+                                            <i class="fa-solid fa-right-left"></i> <br>
+                                            <span>90GB Data/tháng (3GB/ngày)</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="sim_right_botton">
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>
+                                            Miễn phí tháng cước đầu tiên khi mua Sim từ 1 triệu đến 2
+                                            triệu
+                                        </span>
+                                    </strong>
+                                    <br>
+                                    <strong>
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Tặng PMH giảm 50% phụ kiện</span>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div style="position: absolute; bottom: 15px;">
+                                <strong>
+                                    <span class="sim_price">Giá từ: 190.000</span>
+                                </strong>
+                                <strong>
+                                    <button class="sim_button" type="button">Chọn số</button>
+                                </strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End -->
+        </div>
+    </div>
+
+    <!-- Laptop bán chạy -->
+    <div class="products container">
+        <div class="products_title">
+            <div class="title">Laptop bán chạy</div>
+            <div class="view_all">
+                <a href="#">
+                    Xem tất cả
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="info_products">
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>18%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_1.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Laptop Apple MacbookAir M2 8GPU/8Gb/256Gb</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">26.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng từ 14/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>4%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_2.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT HP 14s-cf2527TU Core I3-10110U/ 4GB RAM/ 256GB SSD</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">2.890.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giảm ngay 500.000 (đã trừ vào giá) tặng chuột không dây PADO PM818 nhập mã ZaloPay</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>20%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_3.jpeg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT HP 14s-fq1080AU Ryzen 3-5300U/ 4GB RAM/ 256GB SSD</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">4.390.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Áp dụng khách hàng là sinh viên, học sinh. Giá chỉ con 8.390.000 (đã trừ vào giá)</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>20%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_4.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT Masstel E116 Intel Celeron N4020/ 4GB Ram/ 128GB</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">14.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Khách hàng được hưởng 2 ưu đãi sau: 1. Ưu đãi độc quyền laptop giáo dục Masstel: </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>31%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_5.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT Masstel E140 Intel Celeron N4120/ 4GB Ram/ 128GB SSD</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">23.490.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Khách hàng được hưởng 2 ưu đãi sau: 1. ưu đãi độc quyền laptop giáo dục Masstel</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>6%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_6.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>
+                                MTXT HP 14s-dq5053TU - Intel Core i5-1235U - U15 / 8GB DDR4 2DM 3200 / SSD 512Gb
+                            </h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">8.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giảm ngay 1.000.000 (đã trừ vào giá) tặng chuột không dây PADO PM818</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>3%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_7.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT Dell Inspiron 3520 N5I5122W1 Core i5 1235U/ 8GB/ 256GB SSD</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">4.590.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        Giảm ngay 500.000 (đã trừ vào giá) tặng balo/túi xách laptop tặng chuột không dây PADO
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>6%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_8.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT Dell Vostro 3405 Ryzen 5-3500U/ 8GB RAM/ 512GB SSD/ AMD Radeon™</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">7.490.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giảm ngay 1.000.000 (đã từ vào giá) tặng chuột không dây PADO PM818 </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>11%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_9.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT HP 14s-fq1065AU - AMD Ryzen 5 5500U/ 8GB DDR4-3200/ SSD 512GB</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">25.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giảm ngay 1.500.000 (đã từ vào giá) tặng chuột không dây PADO PM818</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>11%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_10.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT Acer TravelMate B3 TMB311-31-P49D Pentium N5030 / RAM 4Gb/ SSD 256Gb</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">7.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng từ 06/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>55%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_10.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT Acer TravelMate B3 TMB311-31-C2HB Celeron N4020/4GB RAM/128GB</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">3.290.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng từ 06/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>55%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/laptop_11.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>MTXT HP Pavilion 14-dv2070TU 7C0V9PA Core i3 1215U/ 8GB/ 256GB</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">3.890.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giảm ngay 1.500.000 (đã từ vào giá) tặng chuột không dây PADO PM818</p>
+                </div>
+                <!-- End -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Tablet bán chạy -->
+    <div class="products container">
+        <div class="products_title">
+            <div class="title">Tablet bán chạy</div>
+            <div class="view_all">
+                <a href="#">
+                    Xem tất cả
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="info_products">
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>26%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/tablet_1.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>iPad (Gen 9) Wifi 64GB</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">6.990.000</div>
+                            <div class="price_old">9.490.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        KHUYẾN MÃI THANH TOÁN: Giảm 1% tối đa 200.000 khi thanh toán qua ZaloPay hoặc giảm 1% tối
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>24%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/tablet_2.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>iPad (Gen 9) LTE 64GB</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">9.890.000</div>
+                            <div class="price_old">12.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        KHUYẾN MÃI THANH TOÁN: Giảm 1% tối đa 200.000 khi thanh toán qua ZaloPay hoặc giảm 1% tối
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="img_info">
+                        <img src="~/Frontend/img/tablet_3.jpeg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Samsung Galaxy Tab A7 Lite</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">4.490.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        BACK TO SCHOOL: Giảm thêm 1.000.000 khi đổi 400 điểm Viettel++ hoặc giảm thẳng, giá chỉ
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>17%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/tablet_4.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>iPad (Gen 9) Wifi 256GB</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">10.790.000</div>
+                            <div class="price_old">12.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        KHUYẾN MÃI THANH TOÁN: Giảm 1% tối đa 200.000 khi thanh toán qua ZaloPay hoặc giảm 1% tối
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>12%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/tablet_5.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Samsung Galaxy Tab S8 5G</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">18.490.000</div>
+                            <div class="price_old">20.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Không áp dụng kèm chương trình đổi điểm trên Viettel++ tặng bao da Samsung Tab S8</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>23%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/tablet_6.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Máy tính bảng Lenovo Tab M10 Gen 2 TB-X306X 2GB/32GB (Xám)</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">3.990.000</div>
+                            <div class="price_old">5.190.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng từ 06/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>16%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/tablet_7.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>iPad Air (Gen 5) Wifi 64GB</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">13.490.000</div>
+                            <div class="price_old">15.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        KHUYẾN MÃI THANH TOÁN: Giảm 1% tối đa 200.000 khi thanh toán qua ZaloPay hoặc giảm 1% tối
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="img_info">
+                        <img src="~/Frontend/img/tablet_8.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Samsung Galaxy Tab A8</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">6.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        BACK TO SCHOOL: Giảm thêm 1.000.000 khi đổi 400 điểm Viettel++ hoặc giảm thẳng, giá chỉ
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+        </div>
+    </div>
+
+    <!-- Gia dụng bán chạy -->
+    <div class="products container">
+        <div class="products_title">
+            <div class="title">Gia dụng bán chạy</div>
+            <div class="view_all">
+                <a href="#">
+                    Xem tất cả
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="info_products">
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>37%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_1.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Tivi xiaomi TV P1 43" (L43M6-6ARG)</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">6.290.000</div>
+                            <div class="price_old">9.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Nhập mã VNPAYVT150 giá chỉ còn 6.227.000 khi khách hàng thanh toán qua VNPAY</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>34%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_2.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Tivi xiaomi TV P1 55" (L55M6-6ARG)</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">7.890.000</div>
+                            <div class="price_old">11.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Nhập mã VNPAYVT150 giá chỉ còn 7.811.000 khi khách hàng thanh toán qua VNPAY</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>19%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_3.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Nồi chiên không dầu 6L Sunhouse SHD4026</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">2.290.000</div>
+                            <div class="price_old">2.810.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Mua hàng giảm ngay 400.000</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>10%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_4.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Nồi cơm điện 1.8L Sunhouse SHD8607W</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">950.000</div>
+                            <div class="price_old">1.060.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Mua hàng giảm ngay 200.000</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>38%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_5.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Nồi chiên không dầu Xiaomi Mi Smart Air Fryer</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">1.490.000</div>
+                            <div class="price_old">2.390.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá rẻ online: 1.450.000 một đổi 1 trong 30 ngày nếu lỗi do nhà sản xuất</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>31%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_6.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Tivi xiaomi Full HD A2 43inch</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">5.490.000</div>
+                            <div class="price_old">7.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Nhập mã VNPAYVT150 giá chỉ còn 5.435.000 khi khách hàng thanh toán qua VNPAY</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>50%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_7.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Máy làm mát không khí Sunhouse SHD7719</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">3.290.000</div>
+                            <div class="price_old">6.590.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng từ 01/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>60%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_8.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Máy làm mát không khí Sunhouse SHD7723</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">2.990.000</div>
+                            <div class="price_old">7.490.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng từ 01/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>29%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_9.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Quạt điện Benny kiểu đứng BF-49T (màu ghi)</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">1.490.000</div>
+                            <div class="price_old">2.110.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng từ 21/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>43%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_10.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Robot hút bụi lau nhà Xiaomi Mi Vacuum Mop - SKV4093</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">4.290.000</div>
+                            <div class="price_old">7.490.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Một đổi 1 trong 30 ngày nếu lỗi do nhà sản xuất</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>35%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_11.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Tivi xiaomi HD A2 32inch</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">3.890.000</div>
+                            <div class="price_old">5.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        Giá chỉ còn 3.690.000 (áp dụng cho khách hàng lấy hàng tại siêu thị) bảo hành 2 năm tại
+                        nhà
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>40%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_12.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Tivi xiaomi 4K UHD A2 58inch</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">8.390.000</div>
+                            <div class="price_old">13.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Nhập mã VNPAYVT150 giá chỉ còn 8.306.000 khi khách hàng thanh toán qua VNPAY</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>47%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_13.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Robot hút bụi lau nhà Xiaomi Mi Vacuum Mop 2 Lite</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">3.190.000</div>
+                            <div class="price_old">5.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Một đổi 1 trong 30 ngày nếu lỗi do nhà sản xuất</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>20%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/giadung_14.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Quạt đứng Asia VY639990</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">799.000</div>
+                            <div class="price_old">999.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng từ 21/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+        </div>
+    </div>
+
+    <!-- Phụ kiện bán chạy -->
+    <div class="products container">
+        <div class="products_title">
+            <div class="title">Phụ kiện bán chạy</div>
+            <div class="view_all">
+                <a href="#">
+                    Xem tất cả
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="info_products">
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>17%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_1.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Apple Watch Series 8 GPS 41mm</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">9.090.000</div>
+                            <div class="price_old">10.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        Khuyến mãi trả góp: Nhập mã VNPAYVT150 giảm 1% tối đa 150.000 khi thanh toán qua VNPAY
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>50%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_2.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Samsung Galaxy Watch 5 Pro 45mm</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">5.990.000</div>
+                            <div class="price_old">11.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Nhập mã VIETTEL200 giảm 1% tối đa 200.000 khi thanh toán qua ZaloPay</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>39%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_3.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Samsung Galaxy Watch 4 Classic Bluetooth (46mm) Black</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">5.490.000</div>
+                            <div class="price_old">8.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Nhập mã VIETTEL200 giảm 1% tối đa 200.000 khi thanh toán qua ZaloPay</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>10%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_4.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Đồng hồ định vị Wonlex KT07 4G</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">1.790.000</div>
+                            <div class="price_old">8.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Nhập mã VIETTEL200 giảm 1% tối đa 200.000 khi thanh toán qua ZaloPay</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_5.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Đồng hồ định vị Smart Hero 4G</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">1.390.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        Tặng 500.000 mua máy tính bảng Nexta Stydy 1 giảm 50% sim số ssepj khi mua cùng đồng hồ
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>12%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_6.jpeg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Apple Watch SE (2022) GPS 40mm</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">5.690.000</div>
+                            <div class="price_old">6.490.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>
+                        Khuyến mãi trả góp: Nhập mã VNPAYVT150 giảm 1% tối đa 150.000 khi thanh toán qua VNPAY
+                    </p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_7.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Samsung Galaxy Watch 4 Classic Bluetooth (42mm)</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">8.490.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giao hàng miễn phí (nếu cách Viettel Store dưới 10km). Bảo hàng chính hãng</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>15%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_8.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Đồng hồ định vị Drapow G4P</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">1.690.000</div>
+                            <div class="price_old">1.990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giảm 50% sim số đẹp khi mua cùng đồng hồ (giảm tối đa 200.000) tặng gói cước V90B</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>11%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_9.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Đồng hồ định vị Wonlex CT11</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">1.590.000</div>
+                            <div class="price_old">1.790.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giảm thêm 50.000 khi mua cùng điện thoại, máy tính giảm 50% sim số đẹp khi mua</p>
+                </div>
+            </div>
+            <!-- End -->
+            <!-- Start -->
+            <div class="products_info">
+                <a href="#" class="product_img">
+                    <div class="product_sale">
+                        <div>Giảm</div>
+                        <div>30%</div>
+                    </div>
+                    <div class="img_info">
+                        <img src="~/Frontend/img/phukien_10.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+                    </div>
+                    <div class="product_info">
+                        <div class="product_name">
+                            <h3>Redmi Smart Band 2</h3>
+                        </div>
+                        <div class="product_price">
+                            <div class="price_new">690.000</div>
+                            <div class="price_old">990.000</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="info_text">
+                    <p>Giá và khuyến mãi áp dụng đặt và nhận hàng 01/07 - 31/07</p>
+                </div>
+            </div>
+            <!-- End -->
+        </div>
+    </div>
+
+    <!-- Content banner 3 -->
+    <div class="content_banner_2 container">
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/banner3_1.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/banner3_2.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/banner3_3.png" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/banner3_4.png" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/banner3_5.png" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="">
+                <img src="~/Frontend/img/banner3_6.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/banner3_7.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="~/Frontend/img/banner3_8.jpg" alt="Hình ảnh đang được xử lý." width="100%">
+            </a>
+        </div>
+    </div>
+
+    <!-- Phụ kiện, dịch vụ, tin tức -->
+    <div class="content_bottom container">
+        <div class="content_left">
+            <div class="content_left_top">
+                <div class="products_title">
+                    <div class="title">Phụ kiện nổi bật</div>
+                    <div class="view_all">
+                        <a href="#">
+                            Xem tất cả
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="content_left_product">
+                    <aside>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/product_bottom_1.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Pin sạc</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/product_bottom_2.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Củ cáp sạc</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/product_bottom_3.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Thẻ nhớ</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/product_bottom_4.png" alt="Hình ảnh đang được xử lý." 
+                                    width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Tai nghe</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/product_bottom_5.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>USB</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/product_bottom_6.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Chuột/bàn phím</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/product_bottom_7.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Loa</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/product_bottom_8.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Ốp lưng</span>
+                            </a>
+                        </h3>
+                    </aside>
+                </div>
+            </div>
+            <div class="content_left_bottom">
+                <div class="products_title">
+                    <div class="title">Các dịch vụ nổi bật</div>
+                    <div class="view_all">
+                        <a href="#">
+                            Xem tất cả
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="content_left_product">
+                    <aside>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/dichvu_1.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Sim số</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/dichvu_2.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Bảo hiểm</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/dichvu_3.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Thanh toán tiện ích</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/dichvu_4.png" alt="Hình ảnh đang được xử lý." 
+                                    width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Vay tiền mCredit</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/dichvu_5.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Chuyển tiền - thu hộ</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/dichvu_6.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Mở TK NH UOB</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/dichvu_7.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Thẻ game</span>
+                            </a>
+                        </h3>
+                        <h3 class="content_img">
+                            <a href="#">
+                                <span class="icon_img_category">
+                                    <img src="~/Frontend/img/dichvu_8.png" alt="Hình ảnh đang được xử lý."
+                                         width="70%" style="box-shadow: 5px 5px 6px -3px lightseagreen;">
+                                </span> <br>
+                                <span>Internet - truyền hình</span>
+                            </a>
+                        </h3>
+                    </aside>
+                </div>
+            </div>
+        </div>
+        <div class="content_right">
+            <div class="products_title">
+                <div class="title">Tin tức mới</div>
+                <div class="view_all">
+                    <a href="#">
+                        Xem tất cả
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="content_right_bottom">
+                @{
+                    List<ItemNews> list_news = GetHotNews();
+                }
+                @foreach(var item in list_news)
+                {
+                    <!-- Strat -->
+                    <div class="list_news">
+                        <a href="/News/Detail/@item.Id" class="list_new_info">
+                            <div class="img_list_news">
+                                <figure style="width: 130px; height: 100px; overflow: hidden; margin: 0; border-radius: 10px;">
+                                    <img src="~/Upload/News/@item.Photo" alt="Hình ảnh đang được xử lý." style="width:130px; height: 100px; border-radius: 8px; box-shadow: 5px 5px 6px -4px lightseagreen;">
+                                </figure>
+                            </div>
+                            <div>
+                                <div class="img_name">
+                                    <p>@item.Name</p>
+                                </div>
+                                <div class="img_time">
+                                    <strong style="display: flex; margin-top: 5px;"><i class="fa-regular fa-clock" style="margin: 2px 5px 0px 0px;"></i>@Html.Raw(item.Timestamp)</strong>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- End -->
+                }
+            </div>
+        </div>
+    </div>
+</div>
